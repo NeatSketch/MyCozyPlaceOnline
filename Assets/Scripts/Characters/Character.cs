@@ -18,6 +18,11 @@ public class Character : MonoBehaviour
 
     Coroutine lerpRoutine;
 
+    private void Start()
+    {
+        oldPosition = transform.position;
+    }
+
     private void Update()
     {
         if (!controllable && lerpRoutine == null)
@@ -26,6 +31,10 @@ public class Character : MonoBehaviour
             characterController.Move(velocity);
             UpdateRotation(oldPos, transform.position);
         }
+
+        Vector3 delta = transform.position - oldPosition;
+        CurrentVelocity = delta / Time.deltaTime;
+        oldPosition = transform.position;
     }
 
     void UpdateRotation(Vector3 oldPos, Vector3 newPos)
@@ -82,12 +91,20 @@ public class Character : MonoBehaviour
         LerpMove();
     }
 
+    public Vector3 CurrentVelocity
+    {
+        private set;
+        get;
+    }
+
+    private Vector3 oldPosition;
+
     public void Move(Vector3 motion)
     {
         Vector3 oldPos = transform.position;
-        Vector3 newPos = transform.position + motion;
-        UpdateRotation(oldPos, newPos);
 
         characterController.Move(motion);
+
+        UpdateRotation(oldPos, transform.position);
     }
 }
