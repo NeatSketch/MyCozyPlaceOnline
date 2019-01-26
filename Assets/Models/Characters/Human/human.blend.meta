@@ -1,68 +1,97 @@
 fileFormatVersion: 2
-guid: 88db6a5e7e5d3f64da74445fb0ec8bd3
+guid: 1f7c832937e35004cb0f0703d86613ed
 ModelImporter:
   serializedVersion: 23
   fileIDToRecycleName:
-    100000: boy
+    100000: Armature
     100002: boy_body
-    100004: collar_boy
-    100006: collar_girl
-    100008: girl
-    100010: girl_body
-    100012: halo
-    100014: horns
-    100016: //RootNode
-    100018: tile
-    100020: wings
-    400000: boy
+    100004: Boys_hair
+    100006: collar_boy
+    100008: collar_girl
+    100010: Eyes_boy
+    100012: Girl_hair
+    100014: halo
+    100016: Head
+    100018: horns
+    100020: //RootNode
+    100022: LegLeftDown
+    100024: LegLeftUp
+    100026: LegRightDown
+    100028: LegRightUp
+    100030: mouth1
+    100032: SpineDown
+    100034: SpineMid
+    100036: SpineUp
+    100038: tile
+    100040: wings
+    400000: Armature
     400002: boy_body
-    400004: collar_boy
-    400006: collar_girl
-    400008: girl
-    400010: girl_body
-    400012: halo
-    400014: horns
-    400016: //RootNode
-    400018: tile
-    400020: wings
-    2100000: collar_boy
-    2100002: horns
-    2100004: skin
-    2100006: mouth_boy
-    2100008: eyes
-    2100010: cloth_boy
-    2100012: hair_boy
-    2100014: tail
-    2100016: collar_girl
-    2100018: wings
-    2100020: cloth_girl
-    2100022: mouth
-    2100024: Girl_hair
-    2100026: halo
-    2300000: boy_body
+    400004: Boys_hair
+    400006: collar_boy
+    400008: collar_girl
+    400010: Eyes_boy
+    400012: Girl_hair
+    400014: halo
+    400016: Head
+    400018: horns
+    400020: //RootNode
+    400022: LegLeftDown
+    400024: LegLeftUp
+    400026: LegRightDown
+    400028: LegRightUp
+    400030: mouth1
+    400032: SpineDown
+    400034: SpineMid
+    400036: SpineUp
+    400038: tile
+    400040: wings
+    2100000: skin
+    2100002: cloth_boy
+    2100004: wings
+    2100006: halo
+    2100008: collar_girl
+    2100010: Girl_hair
+    2100012: tail
+    2100014: horns
+    2100016: collar_boy
+    2100018: mouth_boy
+    2100020: eyes
+    2100022: hair_boy
+    2300000: Boys_hair
     2300002: collar_boy
     2300004: collar_girl
-    2300006: girl_body
-    2300008: halo
-    2300010: horns
-    2300012: tile
-    2300014: wings
-    3300000: boy_body
+    2300006: Eyes_boy
+    2300008: Girl_hair
+    2300010: halo
+    2300012: horns
+    2300014: mouth1
+    2300016: tile
+    2300018: wings
+    3300000: Boys_hair
     3300002: collar_boy
     3300004: collar_girl
-    3300006: girl_body
-    3300008: halo
-    3300010: horns
-    3300012: tile
-    3300014: wings
-    4300000: collar_boy
-    4300002: horns
-    4300004: boy_body
-    4300006: tile
-    4300008: collar_girl
-    4300010: wings
-    4300012: girl_body
-    4300014: halo
+    3300006: Eyes_boy
+    3300008: Girl_hair
+    3300010: halo
+    3300012: horns
+    3300014: mouth1
+    3300016: tile
+    3300018: wings
+    4300000: boy_body
+    4300002: wings
+    4300004: halo
+    4300006: collar_girl
+    4300008: Girl_hair
+    4300010: tile
+    4300012: horns
+    4300014: collar_boy
+    4300016: mouth1
+    4300018: Eyes_boy
+    4300020: Boys_hair
+    7400000: Default Take
+    7400002: Idle
+    9500000: //RootNode
+    13700000: boy_body
   externalObjects:
   - first:
       type: UnityEngine:Material
@@ -74,11 +103,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: cloth_boy
     second: {fileID: 2100000, guid: ca92bc882608dd84dba8d271eb6996e1, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: cloth_girl
-    second: {fileID: 2100000, guid: 635519a984d4fa342aed428d13a6e5f0, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -109,11 +133,6 @@ ModelImporter:
       assembly: UnityEngine.CoreModule
       name: horns
     second: {fileID: 2100000, guid: a3813c08c5be3c449b33c253b5bc7fe6, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: mouth
-    second: {fileID: 2100000, guid: 3d1d7d4500fed854a83152dc84a32ab0, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
@@ -186,7 +205,7 @@ ModelImporter:
     secondaryUVPackMargin: 4
     useFileScale: 1
     previousCalculatedGlobalScale: 1
-    hasPreviousCalculatedGlobalScale: 0
+    hasPreviousCalculatedGlobalScale: 1
   tangentSpace:
     normalSmoothAngle: 60
     normalImportMode: 0
@@ -213,7 +232,7 @@ ModelImporter:
     hasExtraRoot: 0
     skeletonHasParents: 1
   lastHumanDescriptionAvatarSource: {instanceID: 0}
-  animationType: 0
+  animationType: 2
   humanoidOversampling: 1
   additionalBone: 0
   userData: 
