@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -7,12 +8,100 @@ public class NetworkClient : MonoBehaviour
 {
     public UnityEngine.UI.Text testText;
 
-    private class RequestData {}
+    /*private class Request<T>
+    {
+        [SerializeField]
+        private string action;
 
-    private class LoginRequestData : RequestData
+        [SerializeField]
+        private T payload;
+
+        public T Payload
+        {
+            set
+            {
+                payload = value;
+                Debug.Log(value.GetType().Name);
+                switch (value.GetType().Name)
+                {
+                    case "LoginRequestData":
+                        action = "login";
+                        break;
+                    case "UpdateRequestData":
+                        action = "update";
+                        break;
+                }
+            }
+        }
+    }*/
+
+    private class Request
+    {
+        public string action;
+    }
+
+    private class LoginRequestData : Request
     {
         public string username;
     }
+
+    private class UpdateRequestData : Request
+    {
+        public string username;
+        public string authToken;
+        public float positionX;
+        public float positionZ;
+        public float velocityX;
+        public float velocityZ;
+    }
+
+    private class ResponseData
+    {
+        public string status;
+        public int errorCode;
+        public string errorText;
+    }
+
+    private class LoginResponseData : ResponseData
+    {
+        public LoginResponsePayload payload;
+    }
+
+    private class UpdateResponseData : ResponseData
+    {
+        public UpdateResponsePayload payload;
+    }
+
+    [System.Serializable]
+    private class LoginResponsePayload
+    {
+        public string authToken;
+    }
+
+    [System.Serializable]
+    private class UpdateResponsePayload
+    {
+        public List<Layer> layers;
+    }
+
+    [System.Serializable]
+    private class Layer
+    {
+        public List<Entity> entities;
+    }
+
+    [System.Serializable]
+    private class Entity
+    {
+        public int type;
+        public string name;
+        public float posX;
+        public float posZ;
+        public float velX;
+        public float velZ;
+    }
+
+    private string authToken;
 
     void Start()
     {
@@ -26,6 +115,41 @@ public class NetworkClient : MonoBehaviour
 
     IEnumerator NetworkSync()
     {
+        UnityWebRequest loginRequest = SendRequest
+        (
+            new LoginRequestData
+            {
+                action = "login",
+                username = "Neat"
+            }
+        );
+
+        while (!loginRequest.isDone)
+        {
+            yield return null;
+        }
+
+        if (!IsSuccess(loginRequest))
+        {
+            Debug.LogError(loginRequest.error);
+
+            testText.text = "Error";
+        }
+        else
+        {
+            string response = loginRequest.downloadHandler.text;
+
+            LoginResponseData loginResponseData = JsonUtility.FromJson<LoginResponseData>(response);
+
+            authToken = loginResponseData.payload.authToken;
+
+            Debug.Log("response = " + response);
+            Debug.Log("Error text = " + loginResponseData.errorText);
+            Debug.Log("authToken = " + loginResponseData.payload.authToken);
+
+            testText.text = response + "\n\nDone";
+        }
+
         while (true)
         {
 
@@ -33,9 +157,11 @@ public class NetworkClient : MonoBehaviour
 
             UnityWebRequest unityWebRequest = SendRequest
             (
-                new LoginRequestData
+                new UpdateRequestData
                 {
-                    username = "Neat"
+                    action = "update",
+                    username = "Neat",
+                    authToken = authToken
                 }
             );
 
@@ -54,6 +180,13 @@ public class NetworkClient : MonoBehaviour
             {
                 string response = unityWebRequest.downloadHandler.text;
 
+                UpdateResponseData updateResponseData = JsonUtility.FromJson<UpdateResponseData>(response);
+
+
+
+                Debug.Log("response = " + response);
+                Debug.Log("Error text = " + updateResponseData.errorText);
+
                 testText.text = response + "\n\nDone";
             }
 
@@ -70,9 +203,12 @@ public class NetworkClient : MonoBehaviour
         return false;
     }
 
-    private UnityWebRequest SendRequest(RequestData request)
+    private UnityWebRequest SendRequest(Request request)
     {
-        string data = JsonUtility.ToJson(request);
+        string data = JsonUtility.ToJson
+        (
+            request
+        );
 
         UnityWebRequest unityWebRequest = UnityWebRequest.Post("http://localhost/", "");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(data);
