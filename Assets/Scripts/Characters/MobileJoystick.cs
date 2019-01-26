@@ -27,7 +27,7 @@ public class MobileJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         float x = PointPosition.x * Background.rect.size.x / 2f;
         float y = PointPosition.y * Background.rect.size.y / 2f;
 
-        Knob.anchoredPosition = new Vector2(x, y);
+        Knob.position = new Vector3(x, y) + Background.position;
     }
 
     public void OnEndDrag(PointerEventData eventData)
