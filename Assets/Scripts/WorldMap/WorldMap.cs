@@ -115,51 +115,12 @@ public class WorldMap : MonoBehaviour
 
     public const int CHUNKS_COUNT = 9;
 
-
     public WorldLayer[] worldMap = new WorldLayer[LAYERS_COUNT];
-
-    public Dictionary<int, GameObject> objectPool = new Dictionary<int, GameObject>();
-
-    int layers = 3, lx = 5, ly = 6;
-
 
     private void Awake()
     {
         instance = this;
     }
-
-    /*
-    void Start()
-    {
-        Debug.Log("Filling map..");
-
-        for (int l = 0; l < layers; l++)
-        {
-            for (int cy = 0; cy < 3; cy++)
-            {
-                for (int cx = 0; cx < 3; cx++)
-                {
-                    for (int y = 0; y < ly; y++)
-                    {
-                        for (int x = 0; x < lx; x++)
-                        {
-                            if (x == 0 || x == lx - 1 || y == 0 || y == ly - 1)
-                            {
-                                worldMap[l].layerMap[cx, cy].map[x, y] = (byte)BlockType.Unbreakable;
-                            }
-                            else
-                            {
-                                worldMap[l].layerMap[cx, cy].map[x, y] = (byte)BlockType.Room;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        Debug.Log("Done filling map..");
-    }
-    */
 
     public void SetLayer(int layer, WorldChunkModel[,] chunks)
     {
