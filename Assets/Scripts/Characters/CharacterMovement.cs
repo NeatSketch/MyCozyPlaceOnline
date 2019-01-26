@@ -18,14 +18,13 @@ public class CharacterMovement : MonoBehaviour
 
     [Header("Visual")]
     public Transform characterVisual;
+    public Animator characterAnimator;
 
-    // Start is called before the first frame update
     void Start()
     {
         
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (canControl)
@@ -40,11 +39,20 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleControlling()
     {
-        bool rotateCamLeft = Input.GetKey(KeyCode.Q);
-        bool rotateCamRight = Input.GetKey(KeyCode.E);
+        bool rotateCamLeft = Input.GetButton("RotateCameraLeft") 
+            || MobileInputController.GetButton("RotateCameraLeft");
+        bool rotateCamRight = Input.GetButton("RotateCameraRight") 
+            || MobileInputController.GetButton("RotateCameraRight");
 
         float moveAxisX = Input.GetAxis("Horizontal");
         float moveAxisY = Input.GetAxis("Vertical");
+
+        if (MobileInputController.HasInstance && moveAxisX == 0 && moveAxisY == 0)
+        {
+            var axes = MobileInputController.GetCoordinates();
+            moveAxisX = axes.x;
+            moveAxisY = axes.y;
+        }
 
         float camRotation = cameraParent.transform.rotation.eulerAngles.y;
         
@@ -77,7 +85,6 @@ public class CharacterMovement : MonoBehaviour
             Vector3 desiredMoveDirection = forward * moveAxisY + right * moveAxisX;
             characterController.Move(desiredMoveDirection * maxMoveSpeed * Time.deltaTime);
 
-            
             Quaternion visualRotation = Quaternion.LookRotation(desiredMoveDirection);
 
             characterVisual.localRotation = visualRotation;
@@ -86,6 +93,6 @@ public class CharacterMovement : MonoBehaviour
 
     private void HandleNetworkPlayer()
     {
-        throw new NotImplementedException();
+        
     }
 }
