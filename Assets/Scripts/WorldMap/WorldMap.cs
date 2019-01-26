@@ -15,8 +15,15 @@ public abstract class EntityModel
     public Vector2 position;
     public int type;
 
-    public abstract GameObject Create(int layer, EntityModel entityModel);
-    public abstract GameObject Update(int layer, EntityModel entityModel);
+    public GameObject Create(int layer, EntityModel entityModel)
+    {
+        return Entity.CreateEntity(layer, entityModel);
+    }
+
+    public GameObject Update(int layer, EntityModel entityModel)
+    {
+        return Entity.UpdateEntity(layer, entityModel);
+    }
 
     public Vector3 WorldPosition(int layer)
     {
@@ -27,31 +34,13 @@ public abstract class EntityModel
 public class EntityModel_Block : EntityModel
 {
     public WorldMap.BlockType blockType;
-
-    public override GameObject Create(int layer, EntityModel entityModel)
-    {
-        return Entity.CreateEntity(layer, entityModel);
-    }
-
-    public override GameObject Update(int layer, EntityModel entityModel)
-    {
-        return Entity.UpdateEntity(layer, entityModel);
-    }
+    
 }
 
 public class EntityModel_Furniture : EntityModel
 {
     public string something;
 
-    public override GameObject Create(int layer, EntityModel entityModel)
-    {
-        return Entity.CreateEntity(layer, entityModel);
-    }
-
-    public override GameObject Update(int layer, EntityModel entityModel)
-    {
-        return Entity.UpdateEntity(layer, entityModel);
-    }
 }
 
 public class EntityModel_Player : EntityModel
@@ -59,15 +48,6 @@ public class EntityModel_Player : EntityModel
     public string nickname;
     public string[] skin;
 
-    public override GameObject Create(int layer, EntityModel entityModel)
-    {
-        return Entity.CreateEntity(layer, entityModel);
-    }
-
-    public override GameObject Update(int layer, EntityModel entityModel)
-    {
-        return Entity.UpdateEntity(layer, entityModel);
-    }
 }
 
 public class WorldLayer
@@ -148,6 +128,7 @@ public class WorldMap : MonoBehaviour
         instance = this;
     }
 
+    /*
     void Start()
     {
         Debug.Log("Filling map..");
@@ -178,6 +159,7 @@ public class WorldMap : MonoBehaviour
 
         Debug.Log("Done filling map..");
     }
+    */
 
     public void SetLayer(int layer, WorldChunkModel[,] chunks)
     {
@@ -209,7 +191,7 @@ public class WorldMap : MonoBehaviour
             {
                 for (int x = 0; x < chunksRow; x++)
                 {
-                    worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
+                    worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                 }
             }
         }
@@ -224,11 +206,11 @@ public class WorldMap : MonoBehaviour
                 {
                     if(x < chunksRow - 1)
                     {
-                        worldMap[layer].layerMap[x, z].Update(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
                     }
                     else
                     {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                     }
                 }
             }
@@ -244,11 +226,11 @@ public class WorldMap : MonoBehaviour
                 {
                     if (x > 0)
                     {
-                        worldMap[layer].layerMap[x, z].Update(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
                     }
                     else
                     {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                     }
                 }
             }
@@ -264,11 +246,11 @@ public class WorldMap : MonoBehaviour
                 {
                     if (z > 0)
                     {
-                        worldMap[layer].layerMap[x, z].Update(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
                     }
                     else
                     {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                     }
                 }
             }
@@ -284,11 +266,11 @@ public class WorldMap : MonoBehaviour
                 {
                     if (z < chunksRow - 1)
                     {
-                        worldMap[layer].layerMap[x, z].Update(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
                     }
                     else
                     {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                     }
                 }
             }
