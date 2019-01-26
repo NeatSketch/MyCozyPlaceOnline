@@ -29,7 +29,7 @@ public class CharacterMovement : MonoBehaviour
         {
             HandleControlling();
         }
-    }   
+    }
 
     void HandleControlling()
     {
@@ -37,7 +37,7 @@ public class CharacterMovement : MonoBehaviour
         {
             Vector2 input = MobileInputController.GetInputAxes();
 
-            if (input != Vector2.zero)
+            if (input.magnitude > 0.001f)
             {
                 Vector3 forward = mainCam.transform.forward;
                 Vector3 right = mainCam.transform.right;
@@ -48,6 +48,9 @@ public class CharacterMovement : MonoBehaviour
                 right.Normalize();
 
                 Vector3 desiredMoveDirection = forward * input.y + right * input.x;
+
+                desiredMoveDirection.Normalize();
+
                 Vector3 move = desiredMoveDirection * character.maxMoveSpeed * Time.deltaTime;
 
                 character.Move(move);
@@ -59,10 +62,10 @@ public class CharacterMovement : MonoBehaviour
     {
         if(instance.character != null)
         {
-            instance.character.controllable = false;
+            instance.character.Controllable = false;
         }
 
         instance.character = target;
-        instance.character.controllable = true;
+        instance.character.Controllable = true;
     }
 }

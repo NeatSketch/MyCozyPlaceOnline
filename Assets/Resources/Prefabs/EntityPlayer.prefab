@@ -250,7 +250,7 @@ MonoBehaviour:
   maxMoveSpeed: 6
   characterVisual: {fileID: 4811363561781928056}
   characterController: {fileID: 4811363561965167382}
-  characterAnimator: {fileID: 0}
+  characterAnimator: {fileID: 5203100409186727417}
   LERP_MOVE_TIME: 0.2
   LERP_MAX_DISTANCE: 3
 --- !u!143 &4811363561965167382
@@ -281,6 +281,34 @@ PrefabInstance:
     - target: {fileID: 100020, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
       propertyPath: m_Name
       value: human
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100010, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100014, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100018, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400020, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
       propertyPath: m_LocalPosition.x
@@ -326,11 +354,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9500000, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_Controller
+      value: 
+      objectReference: {fileID: 9100000, guid: 4615b82b3027064468310599834da138, type: 2}
+    - target: {fileID: 100030, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100038, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100040, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
 --- !u!4 &5203100409196272141 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400020, guid: 1f7c832937e35004cb0f0703d86613ed,
+    type: 3}
+  m_PrefabInstance: {fileID: 5203100409196134553}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &5203100409186727417 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 9500000, guid: 1f7c832937e35004cb0f0703d86613ed,
     type: 3}
   m_PrefabInstance: {fileID: 5203100409196134553}
   m_PrefabAsset: {fileID: 0}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    public bool controllable;
+    private bool controllable;
     public float maxMoveSpeed = 6f;
     public Transform characterVisual;
     public CharacterController characterController;
@@ -12,6 +12,19 @@ public class Character : MonoBehaviour
 
     public float LERP_MOVE_TIME = 0.2f;
     public float LERP_MAX_DISTANCE = 3f;
+
+    public bool Controllable
+    {
+        get { return controllable; }
+
+        set
+        {
+            controllable = value;
+            characterController.detectCollisions = controllable;
+        }
+    }
+
+    private Vector3 oldPosition;
 
     Vector3 targetPosition;
     Vector3 velocity;
@@ -25,7 +38,7 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-        if (!controllable && lerpRoutine == null)
+        if (!Controllable && lerpRoutine == null)
         {
             Vector3 oldPos = transform.position;
             characterController.Move(velocity);
@@ -35,6 +48,8 @@ public class Character : MonoBehaviour
         Vector3 delta = transform.position - oldPosition;
         CurrentVelocity = delta / Time.deltaTime;
         oldPosition = transform.position;
+
+        UpdateAnimation();
     }
 
     void UpdateRotation(Vector3 oldPos, Vector3 newPos)
@@ -45,6 +60,11 @@ public class Character : MonoBehaviour
             Quaternion visualRotation = Quaternion.LookRotation(desiredMoveDirection, transform.up);
             characterVisual.localRotation = visualRotation;
         }
+    }
+
+    void UpdateAnimation()
+    {
+        characterAnimator.SetFloat("Speed", CurrentVelocity.magnitude / maxMoveSpeed);
     }
 
     void LerpMove()
@@ -95,14 +115,11 @@ public class Character : MonoBehaviour
     {
         private set;
         get;
-    }
-
-    private Vector3 oldPosition;
+    }   
 
     public void Move(Vector3 motion)
     {
         Vector3 oldPos = transform.position;
-
         characterController.Move(motion);
 
         UpdateRotation(oldPos, transform.position);
