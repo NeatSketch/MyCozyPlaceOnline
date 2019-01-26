@@ -4,20 +4,27 @@ using UnityEngine;
 
 public class CharacterCamera : MonoBehaviour
 {
+    static CharacterCamera instance;
+
     public enum Mode
     {
-        Target,
+        Character,
         Free
     }
 
     public Mode cameraMode;
-    public CharacterController targetCharacter;
+    public Character targetCharacter;
     public Transform cameraItself;
 
     public float cameraAngle = 45f;
     public float cameraRotateSpeed = 10f;
     public float cameraMoveSpeed = 10f;
     public float cameraDistance = 2f;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void LateUpdate()
     {
@@ -43,7 +50,7 @@ public class CharacterCamera : MonoBehaviour
 
         Vector3 targetPos = transform.position;
 
-        if(cameraMode == Mode.Target)
+        if(cameraMode == Mode.Character)
         {
             if (targetCharacter)
             {
@@ -72,5 +79,18 @@ public class CharacterCamera : MonoBehaviour
         transform.localRotation = camRot;
 
         cameraItself.transform.localPosition = camPos;
+    }
+
+    public static void SetTarget(Character character)
+    {
+        instance.targetCharacter = character;
+        instance.cameraMode = Mode.Character;
+    }
+
+    public static void SetTarget(Vector3 position)
+    {
+        instance.targetCharacter = null;
+        instance.cameraMode = Mode.Free;
+        instance.transform.position = position;
     }
 }
