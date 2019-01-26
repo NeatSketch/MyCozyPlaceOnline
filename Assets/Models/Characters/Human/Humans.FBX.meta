@@ -1,0 +1,221 @@
+fileFormatVersion: 2
+guid: 88db6a5e7e5d3f64da74445fb0ec8bd3
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: boy
+    100002: boy_body
+    100004: collar_boy
+    100006: collar_girl
+    100008: girl
+    100010: girl_body
+    100012: halo
+    100014: horns
+    100016: //RootNode
+    100018: tile
+    100020: wings
+    400000: boy
+    400002: boy_body
+    400004: collar_boy
+    400006: collar_girl
+    400008: girl
+    400010: girl_body
+    400012: halo
+    400014: horns
+    400016: //RootNode
+    400018: tile
+    400020: wings
+    2100000: collar_boy
+    2100002: horns
+    2100004: skin
+    2100006: mouth_boy
+    2100008: eyes
+    2100010: cloth_boy
+    2100012: hair_boy
+    2100014: tail
+    2100016: collar_girl
+    2100018: wings
+    2100020: cloth_girl
+    2100022: mouth
+    2100024: Girl_hair
+    2100026: halo
+    2300000: boy_body
+    2300002: collar_boy
+    2300004: collar_girl
+    2300006: girl_body
+    2300008: halo
+    2300010: horns
+    2300012: tile
+    2300014: wings
+    3300000: boy_body
+    3300002: collar_boy
+    3300004: collar_girl
+    3300006: girl_body
+    3300008: halo
+    3300010: horns
+    3300012: tile
+    3300014: wings
+    4300000: collar_boy
+    4300002: horns
+    4300004: boy_body
+    4300006: tile
+    4300008: collar_girl
+    4300010: wings
+    4300012: girl_body
+    4300014: halo
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Girl_hair
+    second: {fileID: 2100000, guid: be7ac8c0d81dd3d45b17d685bfad2135, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cloth_boy
+    second: {fileID: 2100000, guid: ca92bc882608dd84dba8d271eb6996e1, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: cloth_girl
+    second: {fileID: 2100000, guid: 635519a984d4fa342aed428d13a6e5f0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: collar_boy
+    second: {fileID: 2100000, guid: 90e956148b35c284fb700428c538b12b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: collar_girl
+    second: {fileID: 2100000, guid: 3301ebd085acc814486f57046415e65f, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: eyes
+    second: {fileID: 2100000, guid: ec86f9f71e9c91c4ba7bdbd9430d1000, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: hair_boy
+    second: {fileID: 2100000, guid: 15867ac7bd4fcac449de6dcc9ebf650d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: halo
+    second: {fileID: 2100000, guid: ea3819147d1b3de40b37db37421dc7a7, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: horns
+    second: {fileID: 2100000, guid: a3813c08c5be3c449b33c253b5bc7fe6, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mouth
+    second: {fileID: 2100000, guid: 3d1d7d4500fed854a83152dc84a32ab0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: mouth_boy
+    second: {fileID: 2100000, guid: f15ee01c2d05b354ebc7a3a2c4109a58, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: skin
+    second: {fileID: 2100000, guid: 8f4735f39a6f0c84abd2228c651125ff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: tail
+    second: {fileID: 2100000, guid: 4722b313e47612642ab5b5c61d38a8fd, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: wings
+    second: {fileID: 2100000, guid: 696811f4c3af6094083924e99ea545d2, type: 2}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

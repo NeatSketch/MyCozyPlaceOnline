@@ -7,22 +7,17 @@ public class CharacterMovement : MonoBehaviour
 {
     public bool canControl = true;
     public CharacterController characterController;
-    public float maxMoveSpeed = 6f;
-
-    [Header("Camera")]
-    public Transform cameraParent;
-    public Transform cameraItself;
-    public float cameraAngle = 45f;
-    public float cameraRotateSpeed = 10f;
-    public float cameraDistance = 2f;
+    public float maxMoveSpeed = 6f;    
 
     [Header("Visual")]
     public Transform characterVisual;
     public Animator characterAnimator;
 
+    Camera mainCam;
+
     void Start()
     {
-        
+        mainCam = Camera.main;
     }
 
     void Update()
@@ -39,50 +34,19 @@ public class CharacterMovement : MonoBehaviour
 
     void HandleControlling()
     {
-        bool rotateCamLeft = Input.GetButton("RotateCameraLeft") 
-            || MobileInputController.GetButton("RotateCameraLeft");
-        bool rotateCamRight = Input.GetButton("RotateCameraRight") 
-            || MobileInputController.GetButton("RotateCameraRight");
+        Vector2 input = MobileInputController.GetInputAxes();       
 
-        float moveAxisX = Input.GetAxis("Horizontal");
-        float moveAxisY = Input.GetAxis("Vertical");
-
-        if (MobileInputController.HasInstance && moveAxisX == 0 && moveAxisY == 0)
+        if (input != Vector2.zero)
         {
-            var axes = MobileInputController.GetCoordinates();
-            moveAxisX = axes.x;
-            moveAxisY = axes.y;
-        }
-
-        float camRotation = cameraParent.transform.rotation.eulerAngles.y;
-        
-        if(rotateCamLeft)
-        {
-            camRotation += cameraRotateSpeed * Time.deltaTime; 
-        }
-
-        if (rotateCamRight)
-        {
-            camRotation -= cameraRotateSpeed * Time.deltaTime;
-        }
-
-        Quaternion camRot = Quaternion.Euler(cameraAngle, camRotation, 0);
-        Vector3 camPos = new Vector3(0, 0, -cameraDistance);
-
-        cameraParent.transform.localRotation = camRot;
-        cameraItself.transform.localPosition = camPos;
-
-        if (Mathf.Abs(moveAxisX) > 0.1f || Mathf.Abs(moveAxisY) > 0.1f)
-        {
-            Vector3 forward = cameraItself.forward;
-            Vector3 right = cameraItself.right;
+            Vector3 forward = mainCam.transform.forward;
+            Vector3 right = mainCam.transform.right;
 
             forward.y = 0f;
             right.y = 0f;
             forward.Normalize();
             right.Normalize();
 
-            Vector3 desiredMoveDirection = forward * moveAxisY + right * moveAxisX;
+            Vector3 desiredMoveDirection = forward * input.y + right * input.x;
             characterController.Move(desiredMoveDirection * maxMoveSpeed * Time.deltaTime);
 
             Quaternion visualRotation = Quaternion.LookRotation(desiredMoveDirection);

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -29,7 +30,7 @@ public class MobileInputController : MonoBehaviour
         return mobileJoystick.PointPosition;
     }
 
-    public static Vector2 GetCoordinates()
+    static Vector2 GetJoyCoordinates()
     {
         if (HasInstance)
         {
@@ -39,6 +40,19 @@ public class MobileInputController : MonoBehaviour
         {
             return Vector2.zero;
         }
+    }
+
+    public static Vector2 GetInputAxes()
+    {
+        float moveAxisX = Input.GetAxis("Horizontal");
+        float moveAxisY = Input.GetAxis("Vertical");
+
+        if (HasInstance && moveAxisX == 0 && moveAxisY == 0)
+        {
+            return GetJoyCoordinates();
+        }
+
+        return new Vector2(moveAxisX, moveAxisY);
     }
 
     public static void ButtonDown(string name)
