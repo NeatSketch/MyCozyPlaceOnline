@@ -8,34 +8,46 @@ public class WorldChunkModel
     public EntityModel[,] entityModels = new EntityModel[WorldMap.CHUNK_SIZE, WorldMap.CHUNK_SIZE];  
 }
 
-public class EntityModel
+public abstract class EntityModel
 {
     public string id;
+    public GameObject gameObject;
     public Vector2 position;
     public int type;
+
+    public GameObject Create(int layer, EntityModel entityModel)
+    {
+        return Entity.CreateEntity(layer, entityModel);
+    }
+
+    public GameObject Update(int layer, EntityModel entityModel)
+    {
+        return Entity.UpdateEntity(layer, entityModel);
+    }
+
+    public Vector3 WorldPosition(int layer)
+    {
+        return new Vector3(position.x, layer, position.y);
+    }
 }
 
 public class EntityModel_Block : EntityModel
 {
     public WorldMap.BlockType blockType;
+    
 }
 
 public class EntityModel_Furniture : EntityModel
 {
     public string something;
+
 }
 
 public class EntityModel_Player : EntityModel
 {
     public string nickname;
     public string[] skin;
-}
 
-[System.Serializable]
-public class BlockVisual
-{
-    public WorldMap.BlockType blockType;
-    public GameObject visualPrefab;
 }
 
 public class WorldLayer
@@ -51,20 +63,45 @@ public class WorldChunk
 
     public Dictionary<string, GameObject> instantiatedObject = new Dictionary<string, GameObject>();
 
-    public void ClearAndFill(WorldChunkModel worldChunkModel)
+    public void ClearAndFill(int layer, WorldChunkModel worldChunkModel)
     {
+        x = worldChunkModel.x;
+        z = worldChunkModel.z;
 
-        Debug.LogFormat("Chunk x:{0} z:{1} cleared and filled with {2} entities", x, z, worldChunkModel.entityModels.Length);
+        foreach(var obj in instantiatedObject)
+        {
+            Object.Destroy(obj.Value);
+        }
+
+        Update(layer, worldChunkModel);
+
+        //Debug.LogFormat("Chunk x:{0} z:{1} cleared and filled with {2} entities", x, z, worldChunkModel.entityModels.Length);
     }
 
-    public void Update(WorldChunkModel worldChunkModel)
+    public void Update(int layer, WorldChunkModel worldChunkModel)
     {
         Debug.LogFormat("Chunk x:{0} z:{1} updated with {2} entities", x, z, worldChunkModel.entityModels.Length);
+
+        for (int z = 0; z < WorldMap.CHUNK_SIZE; z++)
+        {
+            for (int x = 0; x < WorldMap.CHUNK_SIZE; x++)
+            {
+                if(!instantiatedObject.ContainsKey(worldChunkModel.entityModels[x, z].id))
+                {
+                    GameObject go = worldChunkModel.entityModels[x, z]
+                        .Create(layer, worldChunkModel.entityModels[x, z]);
+
+                    instantiatedObject.Add(worldChunkModel.entityModels[x, z].id, go);
+                }
+            }
+        }
     }
 }
 
 public class WorldMap : MonoBehaviour
 {
+    static WorldMap instance;
+
     public enum BlockType
     {
         Empty = 0,
@@ -78,7 +115,7 @@ public class WorldMap : MonoBehaviour
 
     public const int CHUNKS_COUNT = 9;
 
-    public List<BlockVisual> blockVisuals = new List<BlockVisual>();
+
     public WorldLayer[] worldMap = new WorldLayer[LAYERS_COUNT];
 
     public Dictionary<int, GameObject> objectPool = new Dictionary<int, GameObject>();
@@ -86,9 +123,14 @@ public class WorldMap : MonoBehaviour
     int layers = 3, lx = 5, ly = 6;
 
 
+    private void Awake()
+    {
+        instance = this;
+    }
+
+    /*
     void Start()
     {
-
         Debug.Log("Filling map..");
 
         for (int l = 0; l < layers; l++)
@@ -107,7 +149,7 @@ public class WorldMap : MonoBehaviour
                             }
                             else
                             {
-                                worldMap[l].layerMap[cx, cy].map[x, y] = (byte)BlockType.Unbreakable;
+                                worldMap[l].layerMap[cx, cy].map[x, y] = (byte)BlockType.Room;
                             }
                         }
                     }
@@ -117,6 +159,7 @@ public class WorldMap : MonoBehaviour
 
         Debug.Log("Done filling map..");
     }
+    */
 
     public void SetLayer(int layer, WorldChunkModel[,] chunks)
     {
@@ -136,6 +179,7 @@ public class WorldMap : MonoBehaviour
         // No Shift 
         if (difX == 0 && difZ == 0)
         {
+            Debug.Log("No shift");
         }
 
         // Shift is too big
@@ -143,7 +187,13 @@ public class WorldMap : MonoBehaviour
         {
             forceRefresh = true;
             Debug.Log("Completely redrawing chunks");
-
+            for (int z = 0; z < chunksRow; z++)
+            {
+                for (int x = 0; x < chunksRow; x++)
+                {
+                    worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
+                }
+            }
         }
 
         // Shift right
@@ -156,11 +206,11 @@ public class WorldMap : MonoBehaviour
                 {
                     if(x < chunksRow - 1)
                     {
-                        worldMap[layer].layerMap[x, z].Update(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
                     }
                     else
                     {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                     }
                 }
             }
@@ -176,11 +226,11 @@ public class WorldMap : MonoBehaviour
                 {
                     if (x > 0)
                     {
-                        worldMap[layer].layerMap[x, z].Update(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
                     }
                     else
                     {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                     }
                 }
             }
@@ -196,11 +246,11 @@ public class WorldMap : MonoBehaviour
                 {
                     if (z > 0)
                     {
-                        worldMap[layer].layerMap[x, z].Update(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
                     }
                     else
                     {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                     }
                 }
             }
@@ -216,35 +266,11 @@ public class WorldMap : MonoBehaviour
                 {
                     if (z < chunksRow - 1)
                     {
-                        worldMap[layer].layerMap[x, z].Update(chunks[x, z]);
+                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
                     }
                     else
                     {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(chunks[x, z]);
-                    }
-                }
-            }
-        }
-    }
-
-    public void DrawMap()
-    {
-        for (int l = 0; l < layers; l++)
-        {
-            for (int cy = 0; cy < 3; cy++)
-            {
-                for (int cx = 0; cx < 3; cx++)
-                {
-                    for (int y = 0; y < ly; y++)
-                    {
-                        for (int x = 0; x < lx; x++)
-                        {
-                            var block = worldMap[l].layerMap[cx, cy].map[x, y];
-
-
-
-                            DrawAt()
-                        }
+                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
                     }
                 }
             }

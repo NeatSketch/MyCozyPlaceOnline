@@ -5,15 +5,18 @@ using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
-    public bool canControl = true;
-    public CharacterController characterController;
-    public float maxMoveSpeed = 6f;    
+    static CharacterMovement instance;
 
-    [Header("Visual")]
-    public Transform characterVisual;
-    public Animator characterAnimator;
+    public Character character;
+    
+    public static bool CanControl { get; set; }
 
     Camera mainCam;
+
+    private void Awake()
+    {
+        instance = this;
+    }
 
     void Start()
     {
@@ -22,41 +25,44 @@ public class CharacterMovement : MonoBehaviour
 
     void Update()
     {
-        if (canControl)
+        if (CanControl)
         {
             HandleControlling();
-        }
-        else
-        {
-            HandleNetworkPlayer();
         }
     }   
 
     void HandleControlling()
     {
-        Vector2 input = MobileInputController.GetInputAxes();       
-
-        if (input != Vector2.zero)
+        if (character)
         {
-            Vector3 forward = mainCam.transform.forward;
-            Vector3 right = mainCam.transform.right;
+            Vector2 input = MobileInputController.GetInputAxes();
 
-            forward.y = 0f;
-            right.y = 0f;
-            forward.Normalize();
-            right.Normalize();
+            if (input != Vector2.zero)
+            {
+                Vector3 forward = mainCam.transform.forward;
+                Vector3 right = mainCam.transform.right;
 
-            Vector3 desiredMoveDirection = forward * input.y + right * input.x;
-            characterController.Move(desiredMoveDirection * maxMoveSpeed * Time.deltaTime);
+                forward.y = 0f;
+                right.y = 0f;
+                forward.Normalize();
+                right.Normalize();
 
-            Quaternion visualRotation = Quaternion.LookRotation(desiredMoveDirection);
+                Vector3 desiredMoveDirection = forward * input.y + right * input.x;
+                Vector3 move = desiredMoveDirection * character.maxMoveSpeed * Time.deltaTime;
 
-            characterVisual.localRotation = visualRotation;
+                character.Move(move);
+            }
         }
     }
 
-    private void HandleNetworkPlayer()
+    public static void SetCharacter(Character target)
     {
-        
+        if(instance.character != null)
+        {
+            instance.character.controllable = false;
+        }
+
+        instance.character = target;
+        instance.character.controllable = true;
     }
 }

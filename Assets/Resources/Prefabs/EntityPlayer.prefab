@@ -210,10 +210,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4811363561965167376}
-  - component: {fileID: 4811363561965167383}
+  - component: {fileID: 2756073720503441413}
   - component: {fileID: 4811363561965167382}
   m_Layer: 0
-  m_Name: Character
+  m_Name: EntityPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -234,7 +234,7 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4811363561965167383
+--- !u!114 &2756073720503441413
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -243,14 +243,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 4811363561965167381}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b138363352d848747ad5adea4de7686c, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c0b511d3be591f4088cafbd217bce4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canControl: 1
-  characterController: {fileID: 4811363561965167382}
   maxMoveSpeed: 6
   characterVisual: {fileID: 4811363561781928056}
+  characterController: {fileID: 4811363561965167382}
   characterAnimator: {fileID: 0}
+  LERP_MOVE_TIME: 0.2
+  LERP_MAX_DISTANCE: 3
 --- !u!143 &4811363561965167382
 CharacterController:
   m_ObjectHideFlags: 0
