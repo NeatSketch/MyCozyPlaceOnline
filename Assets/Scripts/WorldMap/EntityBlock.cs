@@ -7,7 +7,10 @@ public class EntityBlock : Entity
     static GameObject prefab;
 
     public static Dictionary<WorldMap.BlockType, GameObject> loadedBlocks = new Dictionary<WorldMap.BlockType, GameObject>();
- 
+
+    GameObject blockInstance;
+    WorldMap.BlockType curBlockType;
+
     public static EntityBlock GetPrefab()
     {
         if (prefab == null)
@@ -15,7 +18,9 @@ public class EntityBlock : Entity
             prefab = Resources.Load<GameObject>("Prefabs/EntityBlock");
         }
 
-        return prefab.GetComponent<EntityBlock>();
+        GameObject go = Instantiate(prefab);
+
+        return go.GetComponent<EntityBlock>();
     }
 
     public static GameObject LoadBlock(WorldMap.BlockType blockType)
@@ -28,6 +33,8 @@ public class EntityBlock : Entity
             loadedBlocks.Add(blockType, block);
         }
 
+        block.name = blockType.ToString();
+
         return Instantiate(block);
     }
 
@@ -36,7 +43,12 @@ public class EntityBlock : Entity
         EntityModel_Block block = (EntityModel_Block)entityModel;
 
         transform.position = block.WorldPosition(layer);
+
         name = "Block " + entityModel.id;
+
+        GameObject blockGO = LoadBlock((WorldMap.BlockType)block.blockType);
+        blockGO.transform.SetParent(transform);
+        blockGO.transform.localPosition = Vector3.zero;
 
         return gameObject;
     }
@@ -46,6 +58,12 @@ public class EntityBlock : Entity
         EntityModel_Block block = (EntityModel_Block)entityModel;
 
         transform.position = block.WorldPosition(layer);
+
+        if(curBlockType != block.blockType)
+        {
+            Destroy(blockInstance);
+            blockInstance = LoadBlock(block.blockType);
+        }
 
         return gameObject;
     }

@@ -12,8 +12,6 @@ public class ToolsMenu : MonoBehaviour
     public Image editWallsBtnImage;
     public Image editModeBtnImage;
 
-    public RoomEditor.WallEditMode wallEditMode;
-
     public Color colorNeutral = new Color(1f / 236f, 1 / 236, 1f / 236f);
     public Color colorNegative = Color.red;
     public Color colorPositive = Color.green;
@@ -48,35 +46,33 @@ public class ToolsMenu : MonoBehaviour
 
     public void EditWallsToggle()
     {
-        switch(wallEditMode)
+        switch(RoomEditor.WallMode)
         {
             case RoomEditor.WallEditMode.None:
                 {
-                    wallEditMode = RoomEditor.WallEditMode.Build;
-                    editWallsBtnImage.color = colorNeutral;
+                    RoomEditor.WallMode = RoomEditor.WallEditMode.Build;
+                    editWallsBtnImage.color = colorPositive;
                 }
                 break;
             case RoomEditor.WallEditMode.Build:
                 {
-                    wallEditMode = RoomEditor.WallEditMode.Break;
+                    RoomEditor.WallMode = RoomEditor.WallEditMode.Break;
                     editWallsBtnImage.color = colorNegative;
                 }
                 break;
             case RoomEditor.WallEditMode.Break:
                 {
-                    wallEditMode = RoomEditor.WallEditMode.None;
-                    editWallsBtnImage.color = colorPositive;
+                    RoomEditor.WallMode = RoomEditor.WallEditMode.None;
+                    editWallsBtnImage.color = colorNeutral;
                 }
                 break;
         }
-
-        RoomEditor.WallMode = wallEditMode;
     }
 
     public void SwitchEditModeToggle()
     {
         RoomEditor.EditMode ^= true;
-        editModeBtnImage.color = (RoomEditor.EditMode) ? colorPositive : Color.gray;
+        editModeBtnImage.color = (RoomEditor.EditMode) ? colorPositive : colorNeutral;
     } 
 
     

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class RoomEditor : MonoBehaviour
 {
@@ -84,6 +85,20 @@ public class RoomEditor : MonoBehaviour
 
             if (click)
             {
+                foreach (Touch t in Input.touches)
+                {
+                    int id = t.fingerId;
+                    if (EventSystem.current.IsPointerOverGameObject(id))
+                    {
+                        return;
+                    }
+                }
+
+                if (EventSystem.current.IsPointerOverGameObject())
+                {
+                    return;
+                }
+
                 Ray ray = mainCam.ScreenPointToRay(inpPos);
 
                 Plane p = new Plane(Vector3.up, Vector3.zero);
@@ -94,15 +109,17 @@ public class RoomEditor : MonoBehaviour
                 {
                     Vector3 pos = ray.GetPoint(e);
                     int posX = Mathf.RoundToInt(pos.x);
-                    int posY = Mathf.RoundToInt(pos.y);
+                    int posZ = Mathf.RoundToInt(pos.z);
+
+                    Debug.LogFormat("Edit x: {0} z: {1} mode: {2}", posX, posZ, WallMode);
 
                     switch(WallMode)
                     {
                         case WallEditMode.Break:
-                            networkClient.SetBlock(posX, posY, (int)WorldMap.BlockType.Empty);
+                            networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Empty);
                             break;
                         case WallEditMode.Build:
-                            networkClient.SetBlock(posX, posY, (int)WorldMap.BlockType.Wall);
+                            networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Wall);
                             break;
                     }
                 }

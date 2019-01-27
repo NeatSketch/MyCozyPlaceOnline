@@ -154,6 +154,7 @@ public class WorldChunk
     {
         foreach (var obj in instantiatedObjects)
         {
+            Debug.Log("Destr:" + obj.Value.name);
             Object.Destroy(obj.Value.gameObject);
             WorldMap.GlobalInstantiatedObjects.Remove(obj.Key);
         }

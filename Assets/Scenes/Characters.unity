@@ -1879,6 +1879,21 @@ PrefabInstance:
       propertyPath: editModeBtnImage
       value: 
       objectReference: {fileID: 1235742262}
+    - target: {fileID: 6436658176364711707, guid: f1ffec5d644dd8c42b7e792f38769c92,
+        type: 3}
+      propertyPath: colorNeutral.r
+      value: 0.9245283
+      objectReference: {fileID: 0}
+    - target: {fileID: 6436658176364711707, guid: f1ffec5d644dd8c42b7e792f38769c92,
+        type: 3}
+      propertyPath: colorNeutral.g
+      value: 0.9245283
+      objectReference: {fileID: 0}
+    - target: {fileID: 6436658176364711707, guid: f1ffec5d644dd8c42b7e792f38769c92,
+        type: 3}
+      propertyPath: colorNeutral.b
+      value: 0.9245283
+      objectReference: {fileID: 0}
     - target: {fileID: 486428566823785742, guid: f1ffec5d644dd8c42b7e792f38769c92,
         type: 3}
       propertyPath: m_IsActive
@@ -3463,6 +3478,9 @@ MonoBehaviour:
   accessoryHead: 
   accessoryNeck: 
   accessoryButt: 
+  accessoryHead2: 
+  accessoryEyes: 
+  accessoryMouth: 
   normalRequestDelay: 1
   minRequestDelay: 0.25
   minLocalPlayerRotationDeltaForEarlySync: 30
