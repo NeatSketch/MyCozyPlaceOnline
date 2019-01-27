@@ -54,6 +54,15 @@ public class NetworkClient : MonoBehaviour
         public float velocityZ;
     }
 
+    private class SetBlockRequestData : Request
+    {
+        public string username;
+        public string authToken;
+        public int positionX;
+        public int positionZ;
+        public int blockType;
+    }
+
     private class ResponseData
     {
         public string status;
@@ -107,6 +116,7 @@ public class NetworkClient : MonoBehaviour
         public float posZ;
         public float velX;
         public float velZ;
+        public int blockType;
     }
 
     private string authToken;
@@ -226,6 +236,11 @@ public class NetworkClient : MonoBehaviour
                                     playerEntity.velocity = new Vector2(entity.velX, entity.velZ);
                                     entityModel = playerEntity;
                                     break;
+                                case 1:
+                                    EntityModel_Block blockEntity = new EntityModel_Block();
+                                    blockEntity.blockType = (entity.blockType > 0 && entity.blockType < 4) ? (WorldMap.BlockType)entity.blockType : 0;
+                                    entityModel = blockEntity;
+                                    break;
                             }
 
                             entityModel.id = entity.id;
@@ -246,6 +261,20 @@ public class NetworkClient : MonoBehaviour
             }
 
         }
+    }
+
+    public void SetBlock(int posX, int posZ, int blockType)
+    {
+        UnityWebRequest setBlockRequest = SendRequest
+        (
+            new SetBlockRequestData
+            {
+                action = "setBlock",
+                username = username,
+                positionX = posX,
+                positionZ = posZ
+            }
+        );
     }
 
     public static bool IsSuccess(UnityWebRequest request)
