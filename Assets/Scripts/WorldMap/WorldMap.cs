@@ -146,20 +146,24 @@ public class WorldMap : MonoBehaviour
         int difX = newChunkX - curChunkX;
         int difZ = newChunkZ - curChunkZ;
 
-        bool forceRefresh;
-
         int chunksRow = 3;
 
         // No Shift 
         if (difX == 0 && difZ == 0)
         {
             Debug.Log("No shift");
+            for (int z = 0; z < chunksRow; z++)
+            {
+                for (int x = 0; x < chunksRow; x++)
+                {
+                    worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
+                }
+            }
         }
 
         // Shift is too big
         if (difX > 1 || difZ > 1)
         {
-            forceRefresh = true;
             Debug.Log("Completely redrawing chunks");
             for (int z = 0; z < chunksRow; z++)
             {
