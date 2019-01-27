@@ -34,6 +34,7 @@ public class Character : MonoBehaviour
     private void Start()
     {
         oldPosition = transform.position;
+        Controllable = false;
     }
 
     private void Update()
