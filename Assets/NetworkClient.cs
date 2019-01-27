@@ -151,6 +151,8 @@ public class NetworkClient : MonoBehaviour
 
             authToken = loginResponseData.payload.authToken;
 
+            localPlayerCharacter.Username = username;
+
             Debug.Log("response = " + response);
             Debug.Log("Error text = " + loginResponseData.errorText);
             Debug.Log("authToken = " + loginResponseData.payload.authToken);

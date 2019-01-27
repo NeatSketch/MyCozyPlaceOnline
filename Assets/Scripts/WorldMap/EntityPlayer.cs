@@ -28,6 +28,7 @@ public class EntityPlayer : Entity
         name = "Player " + player.nickname + " " + player.id;
 
         character = GetComponent<Character>();
+        character.Username = player.nickname;
 
         return gameObject;
     }

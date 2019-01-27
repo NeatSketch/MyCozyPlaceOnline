@@ -36,6 +36,16 @@ public class Character : MonoBehaviour
 
     Coroutine lerpRoutine;
 
+    public UnityEngine.UI.Text usernameIndicatorText;
+
+    public string Username
+    {
+        set
+        {
+            usernameIndicatorText.text = value;
+        }
+    }
+
     private void Start()
     {
         oldPosition = transform.position;
