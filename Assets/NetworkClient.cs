@@ -11,6 +11,10 @@ public class NetworkClient : MonoBehaviour
     public string hostname;
     public string username;
 
+    public string accessoryHead;
+    public string accessoryNeck;
+    public string accessoryButt;
+
     public float normalRequestDelay = 1f;
     public float minRequestDelay = 0.25f;
     public float minLocalPlayerRotationDeltaForEarlySync = 30f;
@@ -46,12 +50,16 @@ public class NetworkClient : MonoBehaviour
 
     private class UpdateRequestData : Request
     {
+        public bool updProps;
         public string username;
         public string authToken;
         public float positionX;
         public float positionZ;
         public float velocityX;
         public float velocityZ;
+        public string accHead;
+        public string accNeck;
+        public string accButt;
     }
 
     private class SetBlockRequestData : Request
@@ -90,6 +98,11 @@ public class NetworkClient : MonoBehaviour
     private class UpdateResponsePayload
     {
         public List<Layer> layers;
+        public float posX;
+        public float posZ;
+        public string accHead;
+        public string accNeck;
+        public string accButt;
     }
 
     [System.Serializable]
@@ -117,6 +130,9 @@ public class NetworkClient : MonoBehaviour
         public float velX;
         public float velZ;
         public int blockType;
+        public string accHead;
+        public string accNeck;
+        public string accButt;
     }
 
     private string authToken;
@@ -130,6 +146,8 @@ public class NetworkClient : MonoBehaviour
     {
         
     }
+
+    private bool updProps = false;
 
     IEnumerator NetworkSync()
     {
@@ -192,7 +210,11 @@ public class NetworkClient : MonoBehaviour
                     positionX = localPlayerCharacter.transform.position.x,
                     positionZ = localPlayerCharacter.transform.position.z,
                     velocityX = localPlayerCharacter.CurrentVelocity.x,
-                    velocityZ = localPlayerCharacter.CurrentVelocity.z
+                    velocityZ = localPlayerCharacter.CurrentVelocity.z,
+                    accHead = accessoryHead,
+                    accNeck = accessoryNeck,
+                    accButt = accessoryButt,
+                    updProps = updProps
                 }
             );
 
@@ -212,6 +234,15 @@ public class NetworkClient : MonoBehaviour
                 string response = unityWebRequest.downloadHandler.text;
 
                 UpdateResponseData updateResponseData = JsonUtility.FromJson<UpdateResponseData>(response);
+
+                if (!updProps)
+                {
+                    float posX = updateResponseData.payload.posX;
+                    float posZ = updateResponseData.payload.posZ;
+                    localPlayerCharacter.transform.position = new Vector3(posX, 0f, posZ);
+
+                    updProps = true;
+                }
 
                 foreach (Layer layer in updateResponseData.payload.layers)
                 {
