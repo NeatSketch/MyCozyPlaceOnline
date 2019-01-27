@@ -84,12 +84,13 @@ public class WorldChunk
         {
             Entity entity;
 
-            if (!instantiatedObjects.TryGetValue(entityModel.id, out entity))
+            if (!WorldMap.GlobalInstantiatedObjects.TryGetValue(entityModel.id, out entity))
             {
                 Entity newEntity = entityModel
                     .Create(layer, entityModel);
 
                 instantiatedObjects.Add(entityModel.id, newEntity);
+                WorldMap.GlobalInstantiatedObjects.Add(entityModel.id, newEntity);
             }
             else
             {
@@ -102,6 +103,7 @@ public class WorldChunk
 public class WorldMap : MonoBehaviour
 {
     static WorldMap instance;
+    public static Dictionary<string, Entity> GlobalInstantiatedObjects = new Dictionary<string, Entity>();
 
     public enum BlockType
     {
