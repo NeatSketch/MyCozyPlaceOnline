@@ -38,6 +38,22 @@ public class EntityBlock : Entity
         return Instantiate(block);
     }
 
+    void CreateBlockAtMe(WorldMap.BlockType blockType)
+    {
+        GameObject blockGO = LoadBlock((WorldMap.BlockType)blockType);
+        blockGO.transform.SetParent(transform);
+        blockGO.transform.localPosition = Vector3.zero;
+
+        if (blockInstance)
+        {
+            Destroy(blockInstance);
+        }
+
+        blockInstance = blockGO;
+
+        curBlockType = blockType;
+    }
+
     public override GameObject CreateIt(int layer, EntityModel entityModel)
     {
         EntityModel_Block block = (EntityModel_Block)entityModel;
@@ -46,9 +62,7 @@ public class EntityBlock : Entity
 
         name = "Block " + entityModel.id;
 
-        GameObject blockGO = LoadBlock((WorldMap.BlockType)block.blockType);
-        blockGO.transform.SetParent(transform);
-        blockGO.transform.localPosition = Vector3.zero;
+        CreateBlockAtMe(block.blockType);
 
         return gameObject;
     }
@@ -61,8 +75,8 @@ public class EntityBlock : Entity
 
         if(curBlockType != block.blockType)
         {
-            Destroy(blockInstance);
-            blockInstance = LoadBlock(block.blockType);
+            Debug.LogFormat("Block {0} != {1}", curBlockType, block.blockType);
+            CreateBlockAtMe(block.blockType);
         }
 
         return gameObject;

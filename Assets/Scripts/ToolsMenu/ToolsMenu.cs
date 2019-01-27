@@ -68,8 +68,8 @@ public class ToolsMenu : MonoBehaviour
 
     public void SwitchEditModeToggle()
     {
-        RoomEditor.EditMode ^= true;
-        editModeBtnImage.color = (RoomEditor.EditMode) ? colorPositive : colorNeutral;
+        /*RoomEditor.EditMode ^= true;
+        editModeBtnImage.color = (RoomEditor.EditMode) ? colorPositive : colorNeutral;*/
     } 
 
     
