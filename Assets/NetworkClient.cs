@@ -161,20 +161,12 @@ public class NetworkClient : MonoBehaviour
 
     private string authToken;
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
-
     private bool updProps = false;
 
     IEnumerator NetworkSync()
     {
+        Debug.Log("START");
+
         UnityWebRequest loginRequest = SendRequest
         (
             new LoginRequestData
@@ -197,6 +189,7 @@ public class NetworkClient : MonoBehaviour
 
                 //testText.text = "Error";
                 InvokeErrorHandler();
+                yield break;
             }
             else
             {
@@ -213,6 +206,7 @@ public class NetworkClient : MonoBehaviour
                 Debug.Log("authToken = " + loginResponseData.payload.authToken);
 
                 //testText.text = response + "\n\nDone";
+                InvokeLoginHandler();
             }
 
         }
@@ -276,6 +270,7 @@ public class NetworkClient : MonoBehaviour
 
                     //testText.text = "Error";
                     InvokeErrorHandler();
+                    yield break;
                 }
                 else
                 {
@@ -442,12 +437,21 @@ public class NetworkClient : MonoBehaviour
 
     public delegate void EventHandler();
     public EventHandler errorHandler;
+    public EventHandler loginHandler;
 
     private void InvokeErrorHandler()
     {
         if (errorHandler != null)
         {
             errorHandler.Invoke();
+        }
+    }
+
+    private void InvokeLoginHandler()
+    {
+        if (loginHandler != null)
+        {
+            loginHandler.Invoke();
         }
     }
 
