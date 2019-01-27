@@ -10,7 +10,8 @@ public class Character : MonoBehaviour
     public CharacterController characterController;
     public Animator characterAnimator;
 
-    public float LERP_MOVE_TIME = 0.2f;
+    public float LERP_MOVE_TIME = 0.5f;
+    public float MOVEMENT_PREDICTION_SPEED_MULT = 0.5f;
     public float LERP_MAX_DISTANCE = 6f;
 
     public bool Controllable
@@ -20,7 +21,11 @@ public class Character : MonoBehaviour
         set
         {
             controllable = value;
-            characterController.detectCollisions = controllable;
+
+            if (!controllable)
+            {
+                gameObject.layer = LayerMask.NameToLayer("RemotePlayer");
+            }
         }
     }
 
@@ -42,7 +47,7 @@ public class Character : MonoBehaviour
         if (!Controllable && lerpRoutine == null)
         {
             Vector3 oldPos = transform.position;
-            characterController.Move(velocity);
+            characterController.Move(velocity * Time.deltaTime * MOVEMENT_PREDICTION_SPEED_MULT);
             UpdateRotation(oldPos, transform.position);
         }
 
@@ -53,9 +58,11 @@ public class Character : MonoBehaviour
         UpdateAnimation();
     }
 
+
     void UpdateRotation(Vector3 oldPos, Vector3 newPos)
     {
         Vector3 desiredMoveDirection = newPos - oldPos;
+        desiredMoveDirection = Vector3.ProjectOnPlane(desiredMoveDirection, Vector3.up);
         if (desiredMoveDirection != Vector3.zero)
         {
             Quaternion visualRotation = Quaternion.LookRotation(desiredMoveDirection, transform.up);

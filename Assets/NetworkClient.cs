@@ -11,6 +11,26 @@ public class NetworkClient : MonoBehaviour
     public string hostname;
     public string username;
 
+    public float normalRequestDelay = 1f;
+    public float minRequestDelay = 0.25f;
+    public float minLocalPlayerRotationDeltaForEarlySync = 30f;
+
+    private float lastRequestTime;
+
+    private bool ForceRequest
+    {
+        get
+        {
+            float timeSinceLastRequest = Time.timeSinceLevelLoad - lastRequestTime;
+            if (timeSinceLastRequest > minRequestDelay && CharacterMovement.RotationDelta > minLocalPlayerRotationDeltaForEarlySync)
+            {
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public WorldMap worldMap;
     public Character localPlayerCharacter;
 
@@ -141,7 +161,14 @@ public class NetworkClient : MonoBehaviour
         while (true)
         {
 
-            yield return new WaitForSeconds(1f);
+            float _delay = 0;
+            while(_delay < normalRequestDelay || ForceRequest)
+            {
+                _delay += Time.deltaTime;
+                yield return null;
+            }
+
+            lastRequestTime = Time.timeSinceLevelLoad;
 
             UnityWebRequest unityWebRequest = SendRequest
             (

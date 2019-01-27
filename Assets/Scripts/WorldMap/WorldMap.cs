@@ -61,18 +61,17 @@ public class WorldChunk
 
     public Dictionary<string, Entity> instantiatedObjects = new Dictionary<string, Entity>();
 
-    public void ClearAndFill(int layer, WorldChunkModel worldChunkModel)
+    public WorldChunk(int layer, WorldChunkModel worldChunkModel)
+    {
+        ClearAndUpdate(layer, worldChunkModel);
+    }
+
+    public void ClearAndUpdate(int layer, WorldChunkModel worldChunkModel)
     {
         x = worldChunkModel.x;
         z = worldChunkModel.z;
 
-        foreach(var obj in instantiatedObjects)
-        {
-            Object.Destroy(obj.Value.gameObject);
-            WorldMap.GlobalInstantiatedObjects.Remove(obj.Key);
-        }
-
-        instantiatedObjects.Clear();
+        Clear();
 
         Update(layer, worldChunkModel);
 
@@ -81,6 +80,8 @@ public class WorldChunk
 
     public void Update(int layer, WorldChunkModel worldChunkModel)
     {
+        x = worldChunkModel.x;
+        z = worldChunkModel.z;
         //Debug.LogFormat("Chunk x:{0} z:{1} updated with {2} entities", x, z, worldChunkModel.entityModels.Count);
 
         foreach(EntityModel entityModel in worldChunkModel.entityModels)
@@ -100,6 +101,17 @@ public class WorldChunk
                 entityModel.Update(layer, entityModel, entity);
             }
         }
+    }
+
+    public void Clear()
+    {
+        foreach (var obj in instantiatedObjects)
+        {
+            Object.Destroy(obj.Value.gameObject);
+            WorldMap.GlobalInstantiatedObjects.Remove(obj.Key);
+        }
+
+        instantiatedObjects.Clear();
     }
 }
 
@@ -121,32 +133,70 @@ public class WorldMap : MonoBehaviour
 
     public const int CHUNKS_COUNT = 9;
 
+    bool filled;
+
     public WorldLayer[] worldMap = new WorldLayer[LAYERS_COUNT];
 
     private void Awake()
     {
         instance = this;
-        for (int i = 0; i < LAYERS_COUNT; i++)
-        {
-            worldMap[i] = new WorldLayer();
-            worldMap[i].layerMap = new WorldChunk[3, 3];
-            for (int j = 0; j < 3; j++)
-            {
-                for (int k = 0; k < 3; k++)
-                {
-                    worldMap[i].layerMap[k, j] = new WorldChunk();
-                }
-            }
-        }
+        
     }
 
     public void SetLayer(int layer, WorldChunkModel[,] chunks)
-    {
-        int curChunkX = worldMap[layer].layerMap[0, 0].x;
-        int curChunkZ = worldMap[layer].layerMap[0, 0].z;
+    {       
 
-        int newChunkX = chunks[0, 0].x;
-        int newChunkZ = chunks[0, 0].z;
+        if (!filled)
+        {
+            for (int i = 0; i < LAYERS_COUNT; i++)
+            {
+                worldMap[i] = new WorldLayer();
+                worldMap[i].layerMap = new WorldChunk[3, 3];
+                for (int j = 0; j < 3; j++)
+                {
+                    for (int k = 0; k < 3; k++)
+                    {
+                        worldMap[i].layerMap[k, j] = new WorldChunk(layer, chunks[k, j]);
+                    }
+                }
+            }
+
+            filled = true;
+            return;
+        }
+
+        string debug = "";
+        for (int z = 0; z < 3; z++)
+        {
+            if (z != 0)
+                debug += " -----\t| -----\t| -----\t\n";
+            for (int x = 0; x < 3; x++)
+            {
+                debug += " " + worldMap[layer].layerMap[x, z].x + ", " + worldMap[layer].layerMap[x, z].z + "\t|";
+            }
+            debug += "\n";
+        }
+
+        debug += "New:\n";
+
+        for (int z = 0; z < 3; z++)
+        {
+            if (z != 0)
+                debug += " -----\t| -----\t| -----\t\n";
+            for (int x = 0; x < 3; x++)
+            {
+                debug += " " + chunks[x, z].x + ", " + chunks[x, z].z + "\t|";
+            }
+            debug += "\n";
+        }
+
+        // Debug.Log(debug);
+
+        int curChunkX = worldMap[layer].layerMap[1, 1].x;
+        int curChunkZ = worldMap[layer].layerMap[1, 1].z;
+
+        int newChunkX = chunks[1, 1].x;
+        int newChunkZ = chunks[1, 1].z;
 
         int difX = newChunkX - curChunkX;
         int difZ = newChunkZ - curChunkZ;
@@ -157,6 +207,90 @@ public class WorldMap : MonoBehaviour
         if (difX == 0 && difZ == 0)
         {
             Debug.Log("No shift");
+            
+        }
+
+        
+
+        // Shift right
+        if (difX == 1)
+        {
+            Debug.Log("Move right");
+            for (int z = 0; z < chunksRow; z++)
+            {
+                worldMap[layer].layerMap[chunksRow - 1, z].Clear();
+                for (int x = 2; x > 0; x--)
+                {
+                    worldMap[layer].layerMap[x, z] = worldMap[layer].layerMap[x - 1, z];
+                }
+
+                worldMap[layer].layerMap[0, z] = new WorldChunk(layer, chunks[0, z]);
+            }
+        }
+
+        if (difX == -1)
+        {
+            Debug.Log("Move left");
+            for (int z = 0; z < chunksRow; z++)
+            {
+                worldMap[layer].layerMap[0, z].Clear();
+
+                for (int x = 0; x < chunksRow - 1; x++)
+                {
+                    worldMap[layer].layerMap[x, z] = worldMap[layer].layerMap[x + 1, z];
+                }
+
+                worldMap[layer].layerMap[chunksRow - 1, z] = new WorldChunk(layer, chunks[chunksRow - 1, z]);
+            }
+        }
+
+        // Shift up
+        if (difZ == 1)
+        {
+            Debug.Log("Move up");
+            for (int x = 0; x < chunksRow; x++)
+            {
+                worldMap[layer].layerMap[x, chunksRow - 1].Clear();
+                for (int z = chunksRow - 1; z > 0; z--)
+                {
+                    worldMap[layer].layerMap[x, z] = worldMap[layer].layerMap[x, z - 1];
+                }
+
+                worldMap[layer].layerMap[x, 0] = new WorldChunk(layer, chunks[x, 0]);
+            }
+        }
+
+        // Shift down
+        if (difZ == -1)
+        {
+            Debug.Log("Move down");
+            for (int x = 0; x < chunksRow; x++)
+            {
+                worldMap[layer].layerMap[x, 0].Clear();
+
+                for (int z = 0; z < chunksRow - 1; z++)
+                {
+                    worldMap[layer].layerMap[x, z] = worldMap[layer].layerMap[x, z + 1];
+                }
+
+                worldMap[layer].layerMap[x, chunksRow - 1] = new WorldChunk(layer, chunks[x, chunksRow - 1]);
+            }
+        }
+
+        // Shift is too big
+        if (Mathf.Abs(difX) > 1 || Mathf.Abs(difZ) > 1)
+        {
+            Debug.Log("Completely redrawing chunks");
+            for (int z = 0; z < chunksRow; z++)
+            {
+                for (int x = 0; x < chunksRow; x++)
+                {
+                    worldMap[layer].layerMap[x, z].ClearAndUpdate(layer, chunks[x, z]);
+                }
+            }
+        }
+        else
+        {
             for (int z = 0; z < chunksRow; z++)
             {
                 for (int x = 0; x < chunksRow; x++)
@@ -165,99 +299,7 @@ public class WorldMap : MonoBehaviour
                 }
             }
         }
-
-        // Shift is too big
-        if (difX > 1 || difZ > 1)
-        {
-            Debug.Log("Completely redrawing chunks");
-            for (int z = 0; z < chunksRow; z++)
-            {
-                for (int x = 0; x < chunksRow; x++)
-                {
-                    worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
-                }
-            }
-        }
-
-        // Shift right
-        if (difX == 1)
-        {
-            Debug.Log("Shifting right");
-            for (int z = 0; z < chunksRow; z++)
-            {
-                for (int x = 0; x < chunksRow; x++)
-                {
-                    if(x < chunksRow - 1)
-                    {
-                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
-                    }
-                    else
-                    {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
-                    }
-                }
-            }
-        }
-
-        // Shift left
-        if (difX == -1)
-        {
-            Debug.Log("Shifting left");
-            for (int z = 0; z < chunksRow; z++)
-            {
-                for (int x = 0; x < chunksRow; x++)
-                {
-                    if (x > 0)
-                    {
-                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
-                    }
-                    else
-                    {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
-                    }
-                }
-            }
-        }
-
-        // Shift up
-        if (difZ == 1)
-        {
-            Debug.Log("Shifting up");
-            for (int z = 0; z < chunksRow; z++)
-            {
-                for (int x = 0; x < chunksRow; x++)
-                {
-                    if (z > 0)
-                    {
-                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
-                    }
-                    else
-                    {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
-                    }
-                }
-            }
-        }
-
-        // Shift down
-        if (difZ == -1)
-        {
-            Debug.Log("Shifting down");
-            for (int z = 0; z < chunksRow; z++)
-            {
-                for (int x = 0; x < chunksRow; x++)
-                {
-                    if (z < chunksRow - 1)
-                    {
-                        worldMap[layer].layerMap[x, z].Update(layer, chunks[x, z]);
-                    }
-                    else
-                    {
-                        worldMap[layer].layerMap[x, z].ClearAndFill(layer, chunks[x, z]);
-                    }
-                }
-            }
-        }
+        
     }
 
     public void DrawAt(int layer, int x, int y, BlockType blockType)

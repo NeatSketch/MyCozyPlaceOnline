@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 2756073720503441413}
   - component: {fileID: 4811363561965167382}
   - component: {fileID: 2341727318481847721}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EntityPlayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -251,8 +251,9 @@ MonoBehaviour:
   characterVisual: {fileID: 4811363561781928056}
   characterController: {fileID: 4811363561965167382}
   characterAnimator: {fileID: 5203100409186727417}
-  LERP_MOVE_TIME: 0.2
-  LERP_MAX_DISTANCE: 3
+  LERP_MOVE_TIME: 0.5
+  MOVEMENT_PREDICTION_SPEED_MULT: 0.5
+  LERP_MAX_DISTANCE: 10
 --- !u!143 &4811363561965167382
 CharacterController:
   m_ObjectHideFlags: 0
@@ -293,6 +294,34 @@ PrefabInstance:
     - target: {fileID: 100020, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
       propertyPath: m_Name
       value: human
+      objectReference: {fileID: 0}
+    - target: {fileID: 100004, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100010, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100014, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100018, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400020, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
       propertyPath: m_LocalPosition.x
@@ -342,34 +371,6 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 4615b82b3027064468310599834da138, type: 2}
-    - target: {fileID: 100004, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100006, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100008, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100010, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100012, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100014, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100018, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 100030, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
       propertyPath: m_IsActive
       value: 0

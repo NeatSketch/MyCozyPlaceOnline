@@ -31,6 +31,13 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
+    float lastRotationAngle;
+    public static float RotationDelta
+    {
+        private set;
+        get;
+    }
+
     void HandleControlling()
     {
         if (character)
@@ -54,6 +61,10 @@ public class CharacterMovement : MonoBehaviour
                 Vector3 move = desiredMoveDirection * character.maxMoveSpeed * Time.deltaTime;
 
                 character.Move(move);
+
+                float rotationAngle = Mathf.Atan2(input.x, input.y);
+                RotationDelta = rotationAngle - lastRotationAngle;
+                lastRotationAngle = rotationAngle;
             }
         }
     }
