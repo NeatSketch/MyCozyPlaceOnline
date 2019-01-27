@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class EntityBlock : Entity
 {
-    static GameObject prefab;    
+    static GameObject prefab;
 
+    public static Dictionary<WorldMap.BlockType, GameObject> loadedBlocks = new Dictionary<WorldMap.BlockType, GameObject>();
+ 
     public static EntityBlock GetPrefab()
     {
         if (prefab == null)
@@ -16,11 +18,24 @@ public class EntityBlock : Entity
         return prefab.GetComponent<EntityBlock>();
     }
 
+    public static GameObject LoadBlock(WorldMap.BlockType blockType)
+    {
+        GameObject block;
+
+        if(!loadedBlocks.TryGetValue(blockType, out block))
+        {
+            block = Resources.Load<GameObject>("Prefabs/Blocks/" + blockType.ToString());
+            loadedBlocks.Add(blockType, block);
+        }
+
+        return Instantiate(block);
+    }
+
     public override GameObject CreateIt(int layer, EntityModel entityModel)
     {
         EntityModel_Block block = (EntityModel_Block)entityModel;
 
-        transform.position = entityModel.WorldPosition(layer);
+        transform.position = block.WorldPosition(layer);
         name = "Block " + entityModel.id;
 
         return gameObject;
@@ -28,6 +43,10 @@ public class EntityBlock : Entity
 
     public override GameObject UpdateIt(int layer, EntityModel entityModel)
     {
+        EntityModel_Block block = (EntityModel_Block)entityModel;
+
+        transform.position = block.WorldPosition(layer);
+
         return gameObject;
     }
 }

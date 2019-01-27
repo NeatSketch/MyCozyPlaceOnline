@@ -57,13 +57,47 @@ public class WorldChunk
 {
     public int x, z;
 
-    public byte[,] map = new byte[WorldMap.CHUNK_SIZE, WorldMap.CHUNK_SIZE];
+    static GameObject planePrefab;
 
     public Dictionary<string, Entity> instantiatedObjects = new Dictionary<string, Entity>();
 
+    GameObject groundPlane;
+
+    GameObject CreatePlane(WorldChunkModel worldChunkModel)
+    {
+        if(!planePrefab)
+        {
+            planePrefab = Resources.Load<GameObject>("Prefabs/GroundPlane");
+        }
+
+        GameObject plane = Object.Instantiate(planePrefab);
+
+        plane.transform.localScale = Vector3.one * WorldMap.CHUNK_SIZE;
+
+        return plane;
+    }
+
+    Vector3 GetChunkCenter(WorldChunkModel worldChunkModel)
+    {
+        return new Vector3
+        (
+        worldChunkModel.x * WorldMap.CHUNK_SIZE + (WorldMap.CHUNK_SIZE / 2f),
+        0,
+        worldChunkModel.z * WorldMap.CHUNK_SIZE + (WorldMap.CHUNK_SIZE / 2f)
+        );
+    }
+
+
     public WorldChunk(int layer, WorldChunkModel worldChunkModel)
     {
+        Debug.Log("Creating " + worldChunkModel.x + " : " + worldChunkModel.z);
+
         ClearAndUpdate(layer, worldChunkModel);
+
+        if(layer == 0)
+        {
+            groundPlane = CreatePlane(worldChunkModel);
+        }
     }
 
     public void ClearAndUpdate(int layer, WorldChunkModel worldChunkModel)
@@ -84,6 +118,8 @@ public class WorldChunk
         z = worldChunkModel.z;
         //Debug.LogFormat("Chunk x:{0} z:{1} updated with {2} entities", x, z, worldChunkModel.entityModels.Count);
 
+        instantiatedObjects = new Dictionary<string, Entity>();
+
         foreach(EntityModel entityModel in worldChunkModel.entityModels)
         {
             Entity entity;
@@ -98,22 +134,20 @@ public class WorldChunk
             }
             else
             {
+                instantiatedObjects.Add(entityModel.id, entity);
                 entityModel.Update(layer, entityModel, entity);
             }
-        }
+        }    
 
-        List<string> keys = new List<string>(instantiatedObjects.Keys);
-
-        foreach(string key in keys)
+        if(!groundPlane)
         {
-            if(!worldChunkModel.entityModels.Exists(x => x.id == key))
-            {
-                Object.Destroy(instantiatedObjects[key].gameObject);
-
-                instantiatedObjects.Remove(key);
-                WorldMap.GlobalInstantiatedObjects.Remove(key);
-            }
+            groundPlane = CreatePlane(worldChunkModel);
         }
+        else
+        {
+            groundPlane.transform.position = GetChunkCenter(worldChunkModel);
+        }
+        
     }
 
     public void Clear()
@@ -125,6 +159,8 @@ public class WorldChunk
         }
 
         instantiatedObjects.Clear();
+
+        Object.Destroy(groundPlane);
     }
 }
 
@@ -157,20 +193,17 @@ public class WorldMap : MonoBehaviour
     }
 
     public void SetLayer(int layer, WorldChunkModel[,] chunks)
-    {       
+    {
 
         if (!filled)
         {
-            for (int i = 0; i < LAYERS_COUNT; i++)
+            worldMap[layer] = new WorldLayer();
+            worldMap[layer].layerMap = new WorldChunk[3, 3];
+            for (int j = 0; j < 3; j++)
             {
-                worldMap[i] = new WorldLayer();
-                worldMap[i].layerMap = new WorldChunk[3, 3];
-                for (int j = 0; j < 3; j++)
+                for (int k = 0; k < 3; k++)
                 {
-                    for (int k = 0; k < 3; k++)
-                    {
-                        worldMap[i].layerMap[k, j] = new WorldChunk(layer, chunks[k, j]);
-                    }
+                    worldMap[layer].layerMap[k, j] = new WorldChunk(layer, chunks[k, j]);
                 }
             }
 
@@ -296,7 +329,8 @@ public class WorldMap : MonoBehaviour
             {
                 for (int x = 0; x < chunksRow; x++)
                 {
-                    worldMap[layer].layerMap[x, z].ClearAndUpdate(layer, chunks[x, z]);
+                    worldMap[layer].layerMap[x, z].Clear();
+                    worldMap[layer].layerMap[x, z] = new WorldChunk(layer, chunks[x, z]);
                 }
             }
         }
@@ -310,47 +344,29 @@ public class WorldMap : MonoBehaviour
                 }
             }
         }
-        
-    }
-
-    public void DrawAt(int layer, int x, int y, BlockType blockType)
-    {
 
 
-        /*
-        switch (blockType)
+        List<string> keys = new List<string>(GlobalInstantiatedObjects.Keys);
+
+        foreach (string key in keys)
         {
-            case BlockType.Empty:
+            bool exist = false;
+            for (int z = 0; z < chunksRow; z++)
+            {
+                for (int x = 0; x < chunksRow; x++)
                 {
-                    
+                    if(worldMap[layer].layerMap[x, z].instantiatedObjects.ContainsKey(key))
+                    {
+                        exist = true;
+                    }
                 }
-                break;
-            case BlockType.Unbreakable:
-                {
+            }
 
-                }
-                break;
-            case BlockType.Room:
-                {
-
-                }
-                break;
-            case BlockType.Wall:
-                {
-
-                }
-                break;
+            if(!exist)
+            {
+                Destroy(GlobalInstantiatedObjects[key].gameObject);
+                GlobalInstantiatedObjects.Remove(key);
+            }
         }
-        */
-    }
-
-    public void UpdateMap()
-    {
-
-    }
-
-    void Update()
-    {
-        
     }
 }

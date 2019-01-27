@@ -8,6 +8,8 @@ public class EntityPlayer : Entity
 
     Character character;
 
+
+
     public static EntityPlayer GetPrefab()
     {
         if (prefab == null)

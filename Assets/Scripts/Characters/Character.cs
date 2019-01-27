@@ -1,6 +1,24 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+
+public enum CharacterSlotName
+{
+    Head,
+    Necklace,
+    Ass,
+    Eyes,
+    OnHead,
+    Mouth
+}
+
+[System.Serializable]
+public class AccessorySlot
+{
+    public CharacterSlotName slotName;
+    public Transform boneTransform;
+}
 
 public class Character : MonoBehaviour
 {
@@ -8,11 +26,34 @@ public class Character : MonoBehaviour
     public float maxMoveSpeed = 6f;
     public Transform characterVisual;
     public CharacterController characterController;
-    public Animator characterAnimator;
+    public Animator characterAnimator;    
 
     public float LERP_MOVE_TIME = 0.5f;
     public float MOVEMENT_PREDICTION_SPEED_MULT = 0.5f;
     public float LERP_MAX_DISTANCE = 6f;
+
+    [Header("Customization")]
+    public List<AccessorySlot> customizationSlots = new List<AccessorySlot>();
+    public List<AccessoryItem> dressedItems = new List<AccessoryItem>();
+
+    static List<AccessoryItem> accessoryItems;
+    public static List<AccessoryItem> AccessoryItems
+    {
+        get
+        {
+            if(accessoryItems == null)
+            {
+                LoadAccessory();
+            }
+
+            return accessoryItems;
+        }
+
+        set
+        {
+            accessoryItems = value;
+        }
+    }
 
     public bool Controllable
     {
@@ -54,6 +95,8 @@ public class Character : MonoBehaviour
     {
         oldPosition = transform.position;
         Controllable = false;
+
+        LoadAccessory();
     }
 
     private void Update()
@@ -147,4 +190,117 @@ public class Character : MonoBehaviour
 
         UpdateRotation(oldPos, transform.position);
     }
+
+    #region Accessory
+
+    public static void LoadAccessory()
+    {
+        if(accessoryItems == null)
+        {
+            accessoryItems = new List<AccessoryItem>(Resources.LoadAll<AccessoryItem>("Prefabs/Accessory"));
+            Debug.Log(accessoryItems.Count + " accessory items loaded");
+        }
+    }
+
+    public void SetDressItems(List<AccessoryItem> items)
+    {
+        List<AccessoryItem> alreadyDressedItems = new List<AccessoryItem>();
+
+        foreach(AccessoryItem item in dressedItems)
+        {
+            if(items.Exists(x => x.name == item.name))
+            {
+                alreadyDressedItems.Add(item);
+            }
+            else
+            {
+                UndressAccessoryItem(item);
+            }
+        }
+
+        foreach(var item in items.Except(alreadyDressedItems))
+        {
+            DressAccessoryItem(item);
+        }
+    }
+
+    public bool IsItemDressed(AccessoryItem item)
+    {
+        return dressedItems.Exists(x => x.name == item.name);
+    }
+
+    public void DressAccessoryItem(AccessoryItem item)
+    {
+        AccessorySlot slot = customizationSlots.Find(x => x.slotName == item.slotName);
+
+        if(slot != null)
+        {
+            AccessoryItem newItemGO = Instantiate(item, slot.boneTransform, false);
+            newItemGO.transform.localPosition = Vector3.zero;
+            newItemGO.transform.localRotation = Quaternion.Euler(0, -90f, 90f);
+            //newItemGO.transform.localRotation = Quaternion.identity;
+            newItemGO.name = item.name;
+            dressedItems.Add(newItemGO);
+        }
+        else
+        {
+            Debug.Log("Cant find slot " + item.slotName);
+        }
+
+        CustomizeMenu.RefreshMenu();
+    }
+
+    public bool DressOrUndress(AccessoryItem accessoryItem)
+    {
+        Debug.Log("Dressing item " + accessoryItem.name);
+
+        if(IsItemDressed(accessoryItem))
+        {
+            UndressAccessoryItem(accessoryItem);
+            return false;
+        }
+        else
+        {
+            UndressSlot(accessoryItem.slotName);
+
+            DressAccessoryItem(accessoryItem);
+            return true;
+        }
+    }
+
+    public void UndressAll()
+    {
+        foreach(AccessoryItem item in dressedItems)
+        {
+            UndressAccessoryItem(item);
+        }
+    }
+
+    public void UndressAccessoryItem(AccessoryItem item)
+    {
+        AccessoryItem dressedItem = dressedItems.Find(x => x.slotName == item.slotName);
+
+        if(dressedItem)
+        {
+            Destroy(dressedItem.gameObject);
+            dressedItems.Remove(dressedItem);
+        }
+
+        CustomizeMenu.RefreshMenu();
+    }
+
+    public void UndressSlot(CharacterSlotName slot)
+    {
+        AccessoryItem item = dressedItems.Find(x => x.slotName == slot);
+
+        if(item)
+        {
+            dressedItems.Remove(item);
+            Destroy(item.gameObject);
+            CustomizeMenu.RefreshMenu();
+        }
+
+    }
+
+    #endregion
 }
