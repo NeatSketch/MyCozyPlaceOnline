@@ -36,7 +36,7 @@ public class EntityPlayer : Entity
     {
         EntityModel_Player player = (EntityModel_Player)entityModel;
 
-        character.MoveTo(entityModel.WorldPosition(layer));
+        character.MoveTo(entityModel.WorldPosition(layer), player.velocity);
 
         return gameObject;
     }

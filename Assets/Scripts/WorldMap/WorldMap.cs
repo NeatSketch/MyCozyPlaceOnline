@@ -68,7 +68,7 @@ public class WorldChunk
 
         foreach(var obj in instantiatedObjects)
         {
-            Object.Destroy(obj.Value);
+            Object.Destroy(obj.Value.gameObject);
             WorldMap.GlobalInstantiatedObjects.Remove(obj.Key);
         }
 
@@ -81,7 +81,7 @@ public class WorldChunk
 
     public void Update(int layer, WorldChunkModel worldChunkModel)
     {
-        Debug.LogFormat("Chunk x:{0} z:{1} updated with {2} entities", x, z, worldChunkModel.entityModels.Count);
+        //Debug.LogFormat("Chunk x:{0} z:{1} updated with {2} entities", x, z, worldChunkModel.entityModels.Count);
 
         foreach(EntityModel entityModel in worldChunkModel.entityModels)
         {

@@ -11,7 +11,7 @@ public class Character : MonoBehaviour
     public Animator characterAnimator;
 
     public float LERP_MOVE_TIME = 0.2f;
-    public float LERP_MAX_DISTANCE = 3f;
+    public float LERP_MAX_DISTANCE = 6f;
 
     public bool Controllable
     {
@@ -106,9 +106,10 @@ public class Character : MonoBehaviour
         targetPosition = transform.position;
     }
 
-    public void MoveTo(Vector3 newWorldPos)
+    public void MoveTo(Vector3 newWorldPos, Vector2 newVelocity)
     {
         targetPosition = newWorldPos;
+        velocity = new Vector3(newVelocity.x, 0, newVelocity.y);
         LerpMove();
     }
 
