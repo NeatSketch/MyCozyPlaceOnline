@@ -37,8 +37,8 @@ public class EntityModel_Block : EntityModel
 
 public class EntityModel_Furniture : EntityModel
 {
-    public string something;
-
+    public int furnitureType;
+    public int rotation;
 }
 
 public class EntityModel_Player : EntityModel

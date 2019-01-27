@@ -149,6 +149,8 @@ public class NetworkClient : MonoBehaviour
         public float velX;
         public float velZ;
         public int blockType;
+        public int furnitureType;
+        public int rotation;
         public string accHead;
         public string accNeck;
         public string accButt;
@@ -161,7 +163,7 @@ public class NetworkClient : MonoBehaviour
 
     void Start()
     {
-        StartCoroutine(NetworkSync());
+        
     }
 
     void Update()
@@ -187,34 +189,44 @@ public class NetworkClient : MonoBehaviour
             yield return null;
         }
 
-        if (!IsSuccess(loginRequest))
+        try
         {
-            Debug.LogError(loginRequest.error);
+            if (!IsSuccess(loginRequest))
+            {
+                Debug.LogError(loginRequest.error);
 
-            //testText.text = "Error";
+                //testText.text = "Error";
+                InvokeErrorHandler();
+            }
+            else
+            {
+                string response = loginRequest.downloadHandler.text;
+
+                LoginResponseData loginResponseData = JsonUtility.FromJson<LoginResponseData>(response);
+
+                authToken = loginResponseData.payload.authToken;
+
+                localPlayerCharacter.Username = username;
+
+                Debug.Log("response = " + response);
+                Debug.Log("Error text = " + loginResponseData.errorText);
+                Debug.Log("authToken = " + loginResponseData.payload.authToken);
+
+                //testText.text = response + "\n\nDone";
+            }
+
         }
-        else
+        catch (System.Exception e)
         {
-            string response = loginRequest.downloadHandler.text;
-
-            LoginResponseData loginResponseData = JsonUtility.FromJson<LoginResponseData>(response);
-
-            authToken = loginResponseData.payload.authToken;
-
-            localPlayerCharacter.Username = username;
-
-            Debug.Log("response = " + response);
-            Debug.Log("Error text = " + loginResponseData.errorText);
-            Debug.Log("authToken = " + loginResponseData.payload.authToken);
-
-            //testText.text = response + "\n\nDone";
+            InvokeErrorHandler();
+            yield break;
         }
 
         while (true)
         {
 
             float _delay = 0;
-            while(_delay < normalRequestDelay || ForceRequest)
+            while (_delay < normalRequestDelay || ForceRequest)
             {
                 _delay += Time.deltaTime;
                 yield return null;
@@ -256,88 +268,104 @@ public class NetworkClient : MonoBehaviour
                 yield return null;
             }
 
-            if (!IsSuccess(unityWebRequest))
+            try
             {
-                Debug.LogError(unityWebRequest.error);
-
-                //testText.text = "Error";
-            }
-            else
-            {
-                string response = unityWebRequest.downloadHandler.text;
-
-                UpdateResponseData updateResponseData = JsonUtility.FromJson<UpdateResponseData>(response);
-
-                if (!updProps)
+                if (!IsSuccess(unityWebRequest))
                 {
-                    float posX = updateResponseData.payload.posX;
-                    float posZ = updateResponseData.payload.posZ;
-                    localPlayerCharacter.transform.position = new Vector3(posX, 0f, posZ);
-                    accessoryHead = updateResponseData.payload.accHead;
-                    accessoryNeck = updateResponseData.payload.accNeck;
-                    accessoryButt = updateResponseData.payload.accButt;
-                    accessoryEyes = updateResponseData.payload.accEyes;
-                    accessoryHead2 = updateResponseData.payload.accHead2;
-                    accessoryMouth = updateResponseData.payload.accMouth;
-                    string[] itemNames = new string[6];
-                    itemNames[0] = accessoryHead;
-                    itemNames[1] = accessoryNeck;
-                    itemNames[2] = accessoryButt;
-                    itemNames[3] = accessoryEyes;
-                    itemNames[4] = accessoryHead2;
-                    itemNames[5] = accessoryMouth;
-                    localPlayerCharacter.SetDressItemsByNames(itemNames);
-                    updProps = true;
+                    Debug.LogError(unityWebRequest.error);
+
+                    //testText.text = "Error";
+                    InvokeErrorHandler();
                 }
-
-                foreach (Layer layer in updateResponseData.payload.layers)
+                else
                 {
-                    WorldChunkModel[,] worldChunks = new WorldChunkModel[3, 3];
-                    for (int i = 0; i < 9; i++)
+                    string response = unityWebRequest.downloadHandler.text;
+
+                    UpdateResponseData updateResponseData = JsonUtility.FromJson<UpdateResponseData>(response);
+
+                    if (!updProps)
                     {
-                        WorldChunkModel worldChunk = new WorldChunkModel();
+                        float posX = updateResponseData.payload.posX;
+                        float posZ = updateResponseData.payload.posZ;
+                        localPlayerCharacter.transform.position = new Vector3(posX, 0f, posZ);
+                        accessoryHead = updateResponseData.payload.accHead;
+                        accessoryNeck = updateResponseData.payload.accNeck;
+                        accessoryButt = updateResponseData.payload.accButt;
+                        accessoryEyes = updateResponseData.payload.accEyes;
+                        accessoryHead2 = updateResponseData.payload.accHead2;
+                        accessoryMouth = updateResponseData.payload.accMouth;
+                        string[] itemNames = new string[6];
+                        itemNames[0] = accessoryHead;
+                        itemNames[1] = accessoryNeck;
+                        itemNames[2] = accessoryButt;
+                        itemNames[3] = accessoryEyes;
+                        itemNames[4] = accessoryHead2;
+                        itemNames[5] = accessoryMouth;
+                        localPlayerCharacter.SetDressItemsByNames(itemNames);
+                        updProps = true;
+                    }
 
-                        worldChunk.x = layer.chunks[i].x;
-                        worldChunk.z = layer.chunks[i].z;
-
-                        worldChunk.entityModels = new List<EntityModel>();
-                        foreach (Entity entity in layer.chunks[i].entities)
+                    foreach (Layer layer in updateResponseData.payload.layers)
+                    {
+                        WorldChunkModel[,] worldChunks = new WorldChunkModel[3, 3];
+                        for (int i = 0; i < 9; i++)
                         {
-                            EntityModel entityModel = null;
+                            WorldChunkModel worldChunk = new WorldChunkModel();
 
-                            switch (entity.type)
+                            worldChunk.x = layer.chunks[i].x;
+                            worldChunk.z = layer.chunks[i].z;
+
+                            worldChunk.entityModels = new List<EntityModel>();
+                            foreach (Entity entity in layer.chunks[i].entities)
                             {
-                                case 0:
-                                    EntityModel_Player playerEntity = new EntityModel_Player();
-                                    playerEntity.nickname = entity.name;
-                                    playerEntity.velocity = new Vector2(entity.velX, entity.velZ);
-                                    entityModel = playerEntity;
-                                    break;
-                                case 1:
-                                    EntityModel_Block blockEntity = new EntityModel_Block();
-                                    blockEntity.blockType = (entity.blockType > 0 && entity.blockType < 4) ? (WorldMap.BlockType)entity.blockType : 0;
-                                    entityModel = blockEntity;
-                                    break;
+                                EntityModel entityModel = null;
+
+                                switch (entity.type)
+                                {
+                                    case 0:
+                                        EntityModel_Player playerEntity = new EntityModel_Player();
+                                        playerEntity.nickname = entity.name;
+                                        playerEntity.velocity = new Vector2(entity.velX, entity.velZ);
+                                        entityModel = playerEntity;
+                                        break;
+                                    case 1:
+                                        EntityModel_Block blockEntity = new EntityModel_Block();
+                                        blockEntity.blockType = (entity.blockType > 0 && entity.blockType < 4) ? (WorldMap.BlockType)entity.blockType : 0;
+                                        entityModel = blockEntity;
+                                        break;
+                                    case 2:
+                                        EntityModel_Furniture furnitureEntity = new EntityModel_Furniture();
+                                        furnitureEntity.furnitureType = entity.furnitureType;
+                                        furnitureEntity.rotation = entity.rotation;
+                                        entityModel = furnitureEntity;
+                                        break;
+                                }
+
+                                entityModel.id = entity.id;
+                                entityModel.position = new Vector2(entity.posX, entity.posZ);
+
+                                worldChunk.entityModels.Add(entityModel);
                             }
 
-                            entityModel.id = entity.id;
-                            entityModel.position = new Vector2(entity.posX, entity.posZ);
-
-                            worldChunk.entityModels.Add(entityModel);
+                            worldChunks[i % 3, i / 3] = worldChunk;
                         }
-
-                        worldChunks[i % 3, i / 3] = worldChunk;
+                        worldMap.SetLayer(0, worldChunks);
                     }
-                    worldMap.SetLayer(0, worldChunks);
+
+                    Debug.Log("response = " + response);
+                    Debug.Log("Error text = " + updateResponseData.errorText);
+
+                    //testText.text = response + "\n\nDone";
                 }
-
-                Debug.Log("response = " + response);
-                Debug.Log("Error text = " + updateResponseData.errorText);
-
-                //testText.text = response + "\n\nDone";
+            }
+            catch (System.Exception e)
+            {
+                InvokeErrorHandler();
+                yield break;
             }
 
         }
+        
     }
 
     public void SetBlock(int posX, int posZ, int blockType)
@@ -410,6 +438,22 @@ public class NetworkClient : MonoBehaviour
         hostname = hostnameText.text;
         enabled = true;
         testForm.SetActive(false);
+    }
+
+    public delegate void EventHandler();
+    public EventHandler errorHandler;
+
+    private void InvokeErrorHandler()
+    {
+        if (errorHandler != null)
+        {
+            errorHandler.Invoke();
+        }
+    }
+
+    public void StartClient()
+    {
+        StartCoroutine(NetworkSync());
     }
 
 }
