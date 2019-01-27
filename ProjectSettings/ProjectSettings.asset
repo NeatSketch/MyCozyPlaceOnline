@@ -514,11 +514,11 @@ PlayerSettings:
   webGLDebugSymbols: 0
   webGLEmscriptenArgs: 
   webGLModulesDirectory: 
-  webGLTemplate: APPLICATION:Default
+  webGLTemplate: PROJECT:Custom
   webGLAnalyzeBuildSize: 0
   webGLUseEmbeddedResources: 0
-  webGLCompressionFormat: 1
-  webGLLinkerTarget: 1
+  webGLCompressionFormat: 2
+  webGLLinkerTarget: 0
   webGLThreadsSupport: 0
   scriptingDefineSymbols: {}
   platformArchitecture: {}
