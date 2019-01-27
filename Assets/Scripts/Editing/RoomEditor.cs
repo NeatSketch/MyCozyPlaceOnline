@@ -76,54 +76,54 @@ public class RoomEditor : MonoBehaviour
 
     private void Update()
     {
-        if (EditMode)
+
+        bool touch = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
+        bool click = Input.GetMouseButtonDown(0);
+
+        Vector2 inpPos = Input.mousePosition;
+
+        if (click)
         {
-            bool touch = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
-            bool click = Input.GetMouseButtonDown(0);
-
-            Vector2 inpPos = Input.mousePosition;
-
-            if (click)
+            foreach (Touch t in Input.touches)
             {
-                foreach (Touch t in Input.touches)
-                {
-                    int id = t.fingerId;
-                    if (EventSystem.current.IsPointerOverGameObject(id))
-                    {
-                        return;
-                    }
-                }
-
-                if (EventSystem.current.IsPointerOverGameObject())
+                int id = t.fingerId;
+                if (EventSystem.current.IsPointerOverGameObject(id))
                 {
                     return;
                 }
+            }
 
-                Ray ray = mainCam.ScreenPointToRay(inpPos);
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
 
-                Plane p = new Plane(Vector3.up, Vector3.zero);
+            Ray ray = mainCam.ScreenPointToRay(inpPos);
 
-                float e = 0;
+            Plane p = new Plane(Vector3.up, Vector3.zero);
 
-                if (p.Raycast(ray, out e))
+            float e = 0;
+
+            if (p.Raycast(ray, out e))
+            {
+                Vector3 pos = ray.GetPoint(e);
+                int posX = Mathf.RoundToInt(pos.x);
+                int posZ = Mathf.RoundToInt(pos.z);
+
+                Debug.LogFormat("Edit x: {0} z: {1} mode: {2}", posX, posZ, WallMode);
+
+                switch (WallMode)
                 {
-                    Vector3 pos = ray.GetPoint(e);
-                    int posX = Mathf.RoundToInt(pos.x);
-                    int posZ = Mathf.RoundToInt(pos.z);
-
-                    Debug.LogFormat("Edit x: {0} z: {1} mode: {2}", posX, posZ, WallMode);
-
-                    switch(WallMode)
-                    {
-                        case WallEditMode.Break:
-                            networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Empty);
-                            break;
-                        case WallEditMode.Build:
-                            networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Wall);
-                            break;
-                    }
+                    case WallEditMode.Break:
+                        
+                        networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Empty);
+                        break;
+                    case WallEditMode.Build:
+                        networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Wall);
+                        break;
                 }
             }
         }
+
     }
 }

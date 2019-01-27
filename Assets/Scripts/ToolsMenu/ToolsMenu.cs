@@ -5,8 +5,6 @@ using UnityEngine.UI;
 
 public class ToolsMenu : MonoBehaviour
 {
-    
-
     public Animator animator;
 
     public Image editWallsBtnImage;
@@ -42,7 +40,6 @@ public class ToolsMenu : MonoBehaviour
             animator.SetBool(strings.Pop(), false);
         }
     } 
-
 
     public void EditWallsToggle()
     {

@@ -253,7 +253,7 @@ public class WorldMap : MonoBehaviour
         // No Shift 
         if (difX == 0 && difZ == 0)
         {
-            Debug.Log("No shift");
+            //Debug.Log("No shift");
             
         }        
 
