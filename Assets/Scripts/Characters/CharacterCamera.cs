@@ -16,14 +16,50 @@ public class CharacterCamera : MonoBehaviour
     public Character targetCharacter;
     public Transform cameraItself;
 
-    public float cameraAngle = 45f;
+    public float cameraSwitchAnimTime = 1f;
+    public float characterCameraAngle = 45f;
+    public float editCameraAngle = 60f;
     public float cameraRotateSpeed = 10f;
     public float cameraMoveSpeed = 10f;
     public float cameraDistance = 2f;
 
+    float cameraAngle;
+    Coroutine animRoutine;
+
+
     private void Awake()
     {
         instance = this;
+        cameraAngle = characterCameraAngle;
+    }
+
+    void LerAngleAnimated(float from, float to)
+    {
+        if(animRoutine != null)
+        {
+            StopCoroutine(animRoutine);
+        }
+
+        animRoutine = StartCoroutine(LerpAngleAnimated_Routine(from, to));
+    }
+
+    IEnumerator LerpAngleAnimated_Routine(float angleFrom, float angleTo)
+    {
+        Debug.Log("a");
+        for (float _animTime = 0; _animTime < cameraSwitchAnimTime; _animTime += Time.deltaTime)
+        {
+            float t = _animTime / cameraSwitchAnimTime;
+
+            cameraAngle = Mathf.Lerp(angleFrom, angleTo, t);
+
+            yield return null;
+        }
+
+        cameraAngle = angleTo;
+
+        animRoutine = null;
+        Debug.Log("b");
+
     }
 
     void LateUpdate()
@@ -89,12 +125,14 @@ public class CharacterCamera : MonoBehaviour
 
     public static void ToEditMode()
     {
-        SetTarget(instance.transform.position);
+        //SetTarget(instance.transform.position);
+        instance.LerAngleAnimated(instance.cameraAngle, instance.editCameraAngle);
     }
 
     public static void ToCharacterMode()
     {
-        SetTarget(instance.targetCharacter);
+       // SetTarget(instance.targetCharacter);
+        instance.LerAngleAnimated(instance.cameraAngle, instance.characterCameraAngle);
     }
 
     public static void SetTarget(Vector3 position)

@@ -19,33 +19,9 @@ public class RoomEditor : MonoBehaviour
 
     public WallEditMode wallEditMode;
 
+
     bool editMode;
 
-
-    public static bool EditMode
-    {
-        get
-        {
-            return instance.editMode;
-        }
-
-        set
-        {
-            instance.editMode = value;
-
-            if(value)
-            {
-                CharacterCamera.ToEditMode();
-            }
-            else
-            {
-                CharacterCamera.ToCharacterMode();
-            }
-
-            CharacterMovement.CanControl = !value;
-
-        }
-    }
 
     public static WallEditMode WallMode
     {
@@ -57,8 +33,19 @@ public class RoomEditor : MonoBehaviour
         set
         {
             instance.wallEditMode = value;
+
+            if (value != WallEditMode.None)
+            {
+                CharacterCamera.ToEditMode();
+            }
+            else
+            {
+                CharacterCamera.ToCharacterMode();
+            }
+
         }
     }
+
 
     Camera mainCam;
 
@@ -74,56 +61,63 @@ public class RoomEditor : MonoBehaviour
 
     }
 
+
+
     private void Update()
     {
-
-        bool touch = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
-        bool click = Input.GetMouseButtonDown(0);
-
-        Vector2 inpPos = Input.mousePosition;
-
-        if (click)
+        if (WallMode != WallEditMode.None)
         {
-            foreach (Touch t in Input.touches)
+            bool touch = Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began;
+            bool click = Input.GetMouseButtonDown(0);
+
+            Vector2 inpPos = Input.mousePosition;
+
+            if (click)
             {
-                int id = t.fingerId;
-                if (EventSystem.current.IsPointerOverGameObject(id))
+                foreach (Touch t in Input.touches)
+                {
+                    int id = t.fingerId;
+                    if (EventSystem.current.IsPointerOverGameObject(id))
+                    {
+                        return;
+                    }
+                }
+
+                if (EventSystem.current.IsPointerOverGameObject())
                 {
                     return;
                 }
-            }
 
-            if (EventSystem.current.IsPointerOverGameObject())
-            {
-                return;
-            }
+                Ray ray = mainCam.ScreenPointToRay(inpPos);
 
-            Ray ray = mainCam.ScreenPointToRay(inpPos);
+                Plane p = new Plane(Vector3.up, Vector3.zero);
 
-            Plane p = new Plane(Vector3.up, Vector3.zero);
+                float e = 0;
 
-            float e = 0;
-
-            if (p.Raycast(ray, out e))
-            {
-                Vector3 pos = ray.GetPoint(e);
-                int posX = Mathf.RoundToInt(pos.x);
-                int posZ = Mathf.RoundToInt(pos.z);
-
-                Debug.LogFormat("Edit x: {0} z: {1} mode: {2}", posX, posZ, WallMode);
-
-                switch (WallMode)
+                if (p.Raycast(ray, out e))
                 {
-                    case WallEditMode.Break:
-                        
-                        networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Empty);
-                        break;
-                    case WallEditMode.Build:
-                        networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Wall);
-                        break;
+                    Vector3 pos = ray.GetPoint(e);
+                    int posX = Mathf.RoundToInt(pos.x);
+                    int posZ = Mathf.RoundToInt(pos.z);
+
+                    Debug.LogFormat("Edit x: {0} z: {1} mode: {2}", posX, posZ, WallMode);
+                    var chunk = WorldMap.ChunkFromPosition(0, posX, posX);
+
+
+                    switch (WallMode)
+                    {
+                        case WallEditMode.Break:
+                            networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Empty);
+                            break;
+                        case WallEditMode.Build:
+                            networkClient.SetBlock(posX, posZ, (int)WorldMap.BlockType.Wall);
+                            //chunk.FakeCreate(posX, posZ,  )
+
+                            break;
+
+                    }
                 }
             }
         }
-
     }
 }

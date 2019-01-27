@@ -62,6 +62,12 @@ public class WorldChunk
     public Dictionary<string, Entity> instantiatedObjects = new Dictionary<string, Entity>();
 
     GameObject groundPlane;
+    /*
+    public void FakeCreate(int x, int z, )
+    {
+
+    }
+    */
 
     GameObject CreatePlane(WorldChunkModel worldChunkModel)
     {
@@ -192,6 +198,32 @@ public class WorldMap : MonoBehaviour
         instance = this;
         
     }
+
+    public static WorldChunk ChunkFromPosition(int layer, int x, int z)
+    {
+        WorldChunk chunk = null;
+
+        for (int j = 0; j < 3; j++)
+        {
+            for (int k = 0; k < 3; k++)
+            {
+                int minX = instance.worldMap[layer].layerMap[k, j].x * CHUNK_SIZE;
+                int maxX = instance.worldMap[layer].layerMap[k, j].x * CHUNK_SIZE + CHUNK_SIZE;
+
+                int minZ = instance.worldMap[layer].layerMap[k, j].z * CHUNK_SIZE;
+                int maxZ = instance.worldMap[layer].layerMap[k, j].z * CHUNK_SIZE + CHUNK_SIZE;
+
+                if(x <= maxX && x >= minX && z <= maxZ && z >= minZ)
+                {
+                    chunk = instance.worldMap[layer].layerMap[k, j];
+                }
+            }
+        }
+
+        return chunk;
+    }
+
+    //public void SetBlock(int layer,)
 
     public void SetLayer(int layer, WorldChunkModel[,] chunks)
     {
