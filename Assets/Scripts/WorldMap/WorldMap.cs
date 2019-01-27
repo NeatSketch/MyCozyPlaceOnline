@@ -101,6 +101,19 @@ public class WorldChunk
                 entityModel.Update(layer, entityModel, entity);
             }
         }
+
+        List<string> keys = new List<string>(instantiatedObjects.Keys);
+
+        foreach(string key in keys)
+        {
+            if(!worldChunkModel.entityModels.Exists(x => x.id == key))
+            {
+                Object.Destroy(instantiatedObjects[key].gameObject);
+
+                instantiatedObjects.Remove(key);
+                WorldMap.GlobalInstantiatedObjects.Remove(key);
+            }
+        }
     }
 
     public void Clear()
@@ -208,9 +221,7 @@ public class WorldMap : MonoBehaviour
         {
             Debug.Log("No shift");
             
-        }
-
-        
+        }        
 
         // Shift right
         if (difX == 1)
