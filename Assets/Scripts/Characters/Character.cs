@@ -26,6 +26,10 @@ public class Character : MonoBehaviour
             {
                 gameObject.layer = LayerMask.NameToLayer("RemotePlayer");
             }
+            else
+            {
+                gameObject.layer = LayerMask.NameToLayer("Player");
+            }
         }
     }
 
