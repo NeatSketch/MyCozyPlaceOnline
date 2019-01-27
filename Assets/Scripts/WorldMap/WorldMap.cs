@@ -111,7 +111,7 @@ public class WorldMap : MonoBehaviour
         Wall = 3
     }
 
-    public const int LAYERS_COUNT = 100;
+    public const int LAYERS_COUNT = 50;
     public const int CHUNK_SIZE = 16;
 
     public const int CHUNKS_COUNT = 9;
@@ -121,6 +121,18 @@ public class WorldMap : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        for (int i = 0; i < LAYERS_COUNT; i++)
+        {
+            worldMap[i] = new WorldLayer();
+            worldMap[i].layerMap = new WorldChunk[3, 3];
+            for (int j = 0; j < 3; j++)
+            {
+                for (int k = 0; k < 3; k++)
+                {
+                    worldMap[i].layerMap[k, j] = new WorldChunk();
+                }
+            }
+        }
     }
 
     public void SetLayer(int layer, WorldChunkModel[,] chunks)
