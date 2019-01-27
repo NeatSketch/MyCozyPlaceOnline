@@ -232,7 +232,8 @@ public class Character : MonoBehaviour
         {
             AccessoryItem item = AccessoryItems.Find(x => x.name == names[i]);
 
-            items.Add(item);
+            if (item)
+                items.Add(item);
         }
 
         SetDressItems(items);
@@ -242,7 +243,7 @@ public class Character : MonoBehaviour
     {
         List<string> names = new List<string>();
 
-        for (int i = 0; i < (int)CharacterSlotName.Mouth; i++)
+        for (int i = 0; i <= (int)CharacterSlotName.Mouth; i++)
         {
             var item = dressedItems.Find(x => x.slotName == (CharacterSlotName)i);
             names.Add(item?.name);

@@ -14,6 +14,9 @@ public class NetworkClient : MonoBehaviour
     public string accessoryHead;
     public string accessoryNeck;
     public string accessoryButt;
+    public string accessoryHead2;
+    public string accessoryEyes;
+    public string accessoryMouth;
 
     public float normalRequestDelay = 1f;
     public float minRequestDelay = 0.25f;
@@ -60,6 +63,9 @@ public class NetworkClient : MonoBehaviour
         public string accHead;
         public string accNeck;
         public string accButt;
+        public string accHead2;
+        public string accEyes;
+        public string accMouth;
     }
 
     private class SetBlockRequestData : Request
@@ -103,6 +109,9 @@ public class NetworkClient : MonoBehaviour
         public string accHead;
         public string accNeck;
         public string accButt;
+        public string accHead2;
+        public string accEyes;
+        public string accMouth;
     }
 
     [System.Serializable]
@@ -133,6 +142,9 @@ public class NetworkClient : MonoBehaviour
         public string accHead;
         public string accNeck;
         public string accButt;
+        public string accHead2;
+        public string accEyes;
+        public string accMouth;
     }
 
     private string authToken;
@@ -200,6 +212,14 @@ public class NetworkClient : MonoBehaviour
 
             lastRequestTime = Time.timeSinceLevelLoad;
 
+            string[] dressItems = localPlayerCharacter.GetDressItems();
+            accessoryHead = dressItems[0];
+            accessoryNeck = dressItems[1];
+            accessoryButt = dressItems[2];
+            accessoryHead2 = dressItems[3];
+            accessoryEyes = dressItems[4];
+            accessoryMouth = dressItems[5];
+
             UnityWebRequest unityWebRequest = SendRequest
             (
                 new UpdateRequestData
@@ -214,6 +234,9 @@ public class NetworkClient : MonoBehaviour
                     accHead = accessoryHead,
                     accNeck = accessoryNeck,
                     accButt = accessoryButt,
+                    accHead2 = accessoryHead2,
+                    accEyes = accessoryEyes,
+                    accMouth = accessoryMouth,
                     updProps = updProps
                 }
             );
@@ -240,7 +263,20 @@ public class NetworkClient : MonoBehaviour
                     float posX = updateResponseData.payload.posX;
                     float posZ = updateResponseData.payload.posZ;
                     localPlayerCharacter.transform.position = new Vector3(posX, 0f, posZ);
-
+                    accessoryHead = updateResponseData.payload.accHead;
+                    accessoryNeck = updateResponseData.payload.accNeck;
+                    accessoryButt = updateResponseData.payload.accButt;
+                    accessoryEyes = updateResponseData.payload.accEyes;
+                    accessoryHead2 = updateResponseData.payload.accHead2;
+                    accessoryMouth = updateResponseData.payload.accMouth;
+                    string[] itemNames = new string[6];
+                    itemNames[0] = accessoryHead;
+                    itemNames[1] = accessoryNeck;
+                    itemNames[2] = accessoryButt;
+                    itemNames[3] = accessoryEyes;
+                    itemNames[4] = accessoryHead2;
+                    itemNames[5] = accessoryMouth;
+                    localPlayerCharacter.SetDressItemsByNames(itemNames);
                     updProps = true;
                 }
 
@@ -302,8 +338,10 @@ public class NetworkClient : MonoBehaviour
             {
                 action = "setBlock",
                 username = username,
+                authToken = authToken,
                 positionX = posX,
-                positionZ = posZ
+                positionZ = posZ,
+                blockType = blockType
             }
         );
     }
