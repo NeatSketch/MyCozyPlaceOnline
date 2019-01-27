@@ -4,58 +4,53 @@ using UnityEngine;
 
 public abstract class Entity : MonoBehaviour
 {
-    public static GameObject CreateEntity(int layer, EntityModel entityModel)
+    public static Entity CreateEntity(int layer, EntityModel entityModel)
     {
         switch(entityModel.GetType().ToString())
         {
             case "EntityModel_Block":
                 {
-                    EntityBlock entityGO = EntityBlock.GetPrefab();
-                    entityGO.CreateIt(layer, entityModel);
-                    return entityGO.gameObject;
+                    EntityBlock entity = EntityBlock.GetPrefab();
+                    entity.CreateIt(layer, entityModel);
+                    return entity;
                 }
             case "EntityModel_Furniture":
                 {
-                    EntityFurniture entityGO = EntityFurniture.GetPrefab();
-                    entityGO.CreateIt(layer, entityModel);
-                    return entityGO.gameObject;
+                    EntityFurniture entity = EntityFurniture.GetPrefab();
+                    entity.CreateIt(layer, entityModel);
+                    return entity;
                 }
             case "EntityModel_Player":
                 {
-                    EntityPlayer entityGO = EntityPlayer.GetPrefab();
-                    entityGO.CreateIt(layer, entityModel);
-                    return entityGO.gameObject;
+                    EntityPlayer entity = EntityPlayer.GetPrefab();
+                    entity.CreateIt(layer, entityModel);
+                    return entity;
                 }
         }
 
         return null;
     }
 
-    public static GameObject UpdateEntity(int layer, EntityModel entityModel)
+    public static void UpdateEntity(int layer, EntityModel entityModel, Entity entity)
     {
         switch (entityModel.GetType().ToString())
         {
             case "EntityModel_Block":
                 {
-                    EntityBlock entityGO = EntityBlock.GetPrefab();
-                    entityGO.UpdateIt(layer, entityModel);
-                    return entityGO.gameObject;
+                    entity.UpdateIt(layer, entityModel);
+                    break;
                 }
             case "EntityModel_Furniture":
                 {
-                    EntityFurniture entityGO = EntityFurniture.GetPrefab();
-                    entityGO.UpdateIt(layer, entityModel);
-                    return entityGO.gameObject;
+                    entity.UpdateIt(layer, entityModel);
+                    break;
                 }
             case "EntityModel_Player":
                 {
-                    EntityPlayer entityGO = EntityPlayer.GetPrefab();
-                    entityGO.UpdateIt(layer, entityModel);
-                    return entityGO.gameObject;
+                    entity.UpdateIt(layer, entityModel);
+                    break;
                 }
         }
-
-        return null;
     }
 
     public abstract GameObject CreateIt(int layer, EntityModel entityModel);

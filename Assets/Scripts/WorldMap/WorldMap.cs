@@ -5,7 +5,7 @@ using UnityEngine;
 public class WorldChunkModel
 {
     public int x, z;
-    public EntityModel[,] entityModels = new EntityModel[WorldMap.CHUNK_SIZE, WorldMap.CHUNK_SIZE];  
+    public List<EntityModel> entityModels;  
 }
 
 public abstract class EntityModel
@@ -15,14 +15,14 @@ public abstract class EntityModel
     public Vector2 position;
     public int type;
 
-    public GameObject Create(int layer, EntityModel entityModel)
+    public Entity Create(int layer, EntityModel entityModel)
     {
         return Entity.CreateEntity(layer, entityModel);
     }
 
-    public GameObject Update(int layer, EntityModel entityModel)
+    public void Update(int layer, EntityModel entityModel, Entity entity)
     {
-        return Entity.UpdateEntity(layer, entityModel);
+        Entity.UpdateEntity(layer, entityModel, entity);
     }
 
     public Vector3 WorldPosition(int layer)
@@ -61,14 +61,14 @@ public class WorldChunk
 
     public byte[,] map = new byte[WorldMap.CHUNK_SIZE, WorldMap.CHUNK_SIZE];
 
-    public Dictionary<string, GameObject> instantiatedObject = new Dictionary<string, GameObject>();
+    public Dictionary<string, Entity> instantiatedObjects = new Dictionary<string, Entity>();
 
     public void ClearAndFill(int layer, WorldChunkModel worldChunkModel)
     {
         x = worldChunkModel.x;
         z = worldChunkModel.z;
 
-        foreach(var obj in instantiatedObject)
+        foreach(var obj in instantiatedObjects)
         {
             Object.Destroy(obj.Value);
         }
@@ -80,19 +80,22 @@ public class WorldChunk
 
     public void Update(int layer, WorldChunkModel worldChunkModel)
     {
-        Debug.LogFormat("Chunk x:{0} z:{1} updated with {2} entities", x, z, worldChunkModel.entityModels.Length);
+        Debug.LogFormat("Chunk x:{0} z:{1} updated with {2} entities", x, z, worldChunkModel.entityModels.Count);
 
-        for (int z = 0; z < WorldMap.CHUNK_SIZE; z++)
+        foreach(EntityModel entityModel in worldChunkModel.entityModels)
         {
-            for (int x = 0; x < WorldMap.CHUNK_SIZE; x++)
-            {
-                if(!instantiatedObject.ContainsKey(worldChunkModel.entityModels[x, z].id))
-                {
-                    GameObject go = worldChunkModel.entityModels[x, z]
-                        .Create(layer, worldChunkModel.entityModels[x, z]);
+            Entity entity;
 
-                    instantiatedObject.Add(worldChunkModel.entityModels[x, z].id, go);
-                }
+            if (!instantiatedObjects.TryGetValue(entityModel.id, out entity))
+            {
+                Entity newEntity = entityModel
+                    .Create(layer, entityModel);
+
+                instantiatedObjects.Add(entityModel.id, newEntity);
+            }
+            else
+            {
+                entityModel.Update(layer, entityModel, entity);
             }
         }
     }
