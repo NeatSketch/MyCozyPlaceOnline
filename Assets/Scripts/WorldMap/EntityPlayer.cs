@@ -6,11 +6,13 @@ public class EntityPlayer : Entity
 {
     static GameObject prefab;
 
+    Character character;
+
     public static EntityPlayer GetPrefab()
     {
         if (prefab == null)
         {
-            prefab = Resources.Load<GameObject>("/Prefabs/EntityPlayer");
+            prefab = Resources.Load<GameObject>("Prefabs/EntityPlayer");
         }
 
         return prefab.GetComponent<EntityPlayer>();
@@ -23,6 +25,8 @@ public class EntityPlayer : Entity
         transform.position = entityModel.WorldPosition(layer);
         name = "Player " + player.nickname + " " + player.id;
 
+        character = GetComponent<Character>();
+
         return gameObject;
     }
 
@@ -30,7 +34,7 @@ public class EntityPlayer : Entity
     {
         EntityModel_Player player = (EntityModel_Player)entityModel;
 
-        transform.position = entityModel.WorldPosition(layer);
+        character.MoveTo(entityModel.WorldPosition(layer));
 
         return gameObject;
     }

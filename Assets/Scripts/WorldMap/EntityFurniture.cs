@@ -10,7 +10,7 @@ public class EntityFurniture : Entity
     {
         if (prefab == null)
         {
-            prefab = Resources.Load<GameObject>("/Prefabs/EntityPlayer");
+            prefab = Resources.Load<GameObject>("Prefabs/EntityPlayer");
         }
 
         return prefab.GetComponent<EntityFurniture>();

@@ -10,7 +10,7 @@ public class EntityBlock : Entity
     {
         if (prefab == null)
         {
-            prefab = Resources.Load<GameObject>("/Prefabs/EntityBlock");
+            prefab = Resources.Load<GameObject>("Prefabs/EntityBlock");
         }
 
         return prefab.GetComponent<EntityBlock>();

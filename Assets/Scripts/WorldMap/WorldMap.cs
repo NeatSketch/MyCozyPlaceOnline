@@ -11,9 +11,7 @@ public class WorldChunkModel
 public abstract class EntityModel
 {
     public string id;
-    public GameObject gameObject;
     public Vector2 position;
-    public int type;
 
     public Entity Create(int layer, EntityModel entityModel)
     {
@@ -46,8 +44,8 @@ public class EntityModel_Furniture : EntityModel
 public class EntityModel_Player : EntityModel
 {
     public string nickname;
-    public string[] skin;
-
+    //public string[] skin;
+    public Vector2 velocity;
 }
 
 public class WorldLayer

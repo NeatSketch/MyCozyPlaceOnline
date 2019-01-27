@@ -6,34 +6,13 @@ using UnityEngine.Networking;
 
 public class NetworkClient : MonoBehaviour
 {
-    public UnityEngine.UI.Text testText;
+    //public UnityEngine.UI.Text testText;
 
-    /*private class Request<T>
-    {
-        [SerializeField]
-        private string action;
+    public string hostname;
+    public string username;
 
-        [SerializeField]
-        private T payload;
-
-        public T Payload
-        {
-            set
-            {
-                payload = value;
-                Debug.Log(value.GetType().Name);
-                switch (value.GetType().Name)
-                {
-                    case "LoginRequestData":
-                        action = "login";
-                        break;
-                    case "UpdateRequestData":
-                        action = "update";
-                        break;
-                }
-            }
-        }
-    }*/
+    public WorldMap worldMap;
+    public Character localPlayerCharacter;
 
     private class Request
     {
@@ -87,12 +66,21 @@ public class NetworkClient : MonoBehaviour
     [System.Serializable]
     private class Layer
     {
+        public List<Chunk> chunks;
+    }
+
+    [System.Serializable]
+    private class Chunk
+    {
         public List<Entity> entities;
+        public int x;
+        public int z;
     }
 
     [System.Serializable]
     private class Entity
     {
+        public string id;
         public int type;
         public string name;
         public float posX;
@@ -120,7 +108,7 @@ public class NetworkClient : MonoBehaviour
             new LoginRequestData
             {
                 action = "login",
-                username = "Neat"
+                username = username
             }
         );
 
@@ -133,7 +121,7 @@ public class NetworkClient : MonoBehaviour
         {
             Debug.LogError(loginRequest.error);
 
-            testText.text = "Error";
+            //testText.text = "Error";
         }
         else
         {
@@ -147,7 +135,7 @@ public class NetworkClient : MonoBehaviour
             Debug.Log("Error text = " + loginResponseData.errorText);
             Debug.Log("authToken = " + loginResponseData.payload.authToken);
 
-            testText.text = response + "\n\nDone";
+            //testText.text = response + "\n\nDone";
         }
 
         while (true)
@@ -160,8 +148,12 @@ public class NetworkClient : MonoBehaviour
                 new UpdateRequestData
                 {
                     action = "update",
-                    username = "Neat",
-                    authToken = authToken
+                    username = username,
+                    authToken = authToken,
+                    positionX = localPlayerCharacter.transform.position.x,
+                    positionZ = localPlayerCharacter.transform.position.z,
+                    velocityX = localPlayerCharacter.CurrentVelocity.x,
+                    velocityZ = localPlayerCharacter.CurrentVelocity.z
                 }
             );
 
@@ -174,7 +166,7 @@ public class NetworkClient : MonoBehaviour
             {
                 Debug.LogError(unityWebRequest.error);
 
-                testText.text = "Error";
+                //testText.text = "Error";
             }
             else
             {
@@ -182,12 +174,46 @@ public class NetworkClient : MonoBehaviour
 
                 UpdateResponseData updateResponseData = JsonUtility.FromJson<UpdateResponseData>(response);
 
+                foreach (Layer layer in updateResponseData.payload.layers)
+                {
+                    WorldChunkModel[,] worldChunks = new WorldChunkModel[3, 3];
+                    for (int i = 0; i < 9; i++)
+                    {
+                        WorldChunkModel worldChunk = new WorldChunkModel();
 
+                        worldChunk.x = layer.chunks[i].x;
+                        worldChunk.z = layer.chunks[i].z;
+
+                        worldChunk.entityModels = new List<EntityModel>();
+                        foreach (Entity entity in layer.chunks[i].entities)
+                        {
+                            EntityModel entityModel = null;
+
+                            switch (entity.type)
+                            {
+                                case 0:
+                                    EntityModel_Player playerEntity = new EntityModel_Player();
+                                    playerEntity.nickname = entity.name;
+                                    playerEntity.velocity = new Vector2(entity.velX, entity.velZ);
+                                    entityModel = playerEntity;
+                                    break;
+                            }
+
+                            entityModel.id = entity.id;
+                            entityModel.position = new Vector2(entity.posX, entity.posZ);
+
+                            worldChunk.entityModels.Add(entityModel);
+                        }
+
+                        worldChunks[i % 3, i / 3] = worldChunk;
+                    }
+                    worldMap.SetLayer(0, worldChunks);
+                }
 
                 Debug.Log("response = " + response);
                 Debug.Log("Error text = " + updateResponseData.errorText);
 
-                testText.text = response + "\n\nDone";
+                //testText.text = response + "\n\nDone";
             }
 
         }
@@ -210,7 +236,7 @@ public class NetworkClient : MonoBehaviour
             request
         );
 
-        UnityWebRequest unityWebRequest = UnityWebRequest.Post("http://localhost/", "");
+        UnityWebRequest unityWebRequest = UnityWebRequest.Post(string.Format("http://{0}/", hostname), "");
         byte[] bodyRaw = Encoding.UTF8.GetBytes(data);
         unityWebRequest.uploadHandler = new UploadHandlerRaw(bodyRaw);
         unityWebRequest.uploadHandler.contentType = "application/json";
@@ -218,6 +244,18 @@ public class NetworkClient : MonoBehaviour
         unityWebRequest.SendWebRequest();
 
         return unityWebRequest;
+    }
+
+    public GameObject testForm;
+    public UnityEngine.UI.InputField usernameText;
+    public UnityEngine.UI.InputField hostnameText;
+
+    public void TestGame()
+    {
+        username = usernameText.text;
+        hostname = hostnameText.text;
+        enabled = true;
+        testForm.SetActive(false);
     }
 
 }
