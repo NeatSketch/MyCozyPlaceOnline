@@ -87,9 +87,19 @@ public class CharacterCamera : MonoBehaviour
         instance.cameraMode = Mode.Character;
     }
 
+    public static void ToEditMode()
+    {
+        SetTarget(instance.transform.position);
+    }
+
+    public static void ToCharacterMode()
+    {
+        SetTarget(instance.targetCharacter);
+    }
+
     public static void SetTarget(Vector3 position)
     {
-        instance.targetCharacter = null;
+        //instance.targetCharacter = null;
         instance.cameraMode = Mode.Free;
         instance.transform.position = position;
     }

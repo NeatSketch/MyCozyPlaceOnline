@@ -10,7 +10,7 @@ public class AccessoryItemBtn : MonoBehaviour
     public MeshFilter meshFilter;
     public MeshRenderer meshRenderer;
 
-    public float meshSizeMult = 5f;
+    const float meshSizeMult = 10f;
 
     const float ROTATE_PREVIEW_SPEED = 5f;
 
@@ -42,13 +42,17 @@ public class AccessoryItemBtn : MonoBehaviour
             meshRenderer.material = mat;
         }
 
+        meshRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+        meshRenderer.receiveShadows = false;
         startScale = meshFilter.transform.localScale;
     }
 
     private void Update()
     {
         meshFilter.gameObject.transform.Rotate(0, Time.deltaTime * ROTATE_PREVIEW_SPEED, 0, Space.Self);
-        meshFilter.transform.localScale = startScale / meshFilter.mesh.bounds.size.x * meshSizeMult;
+        var scale = startScale / meshFilter.mesh.bounds.size.x * meshSizeMult;
+        if(scale.magnitude > 0)
+        meshFilter.transform.localScale = scale;
 
     }
 

@@ -5,21 +5,18 @@ using UnityEngine.UI;
 
 public class ToolsMenu : MonoBehaviour
 {
-    public enum WallEditMode
-    {
-        None,
-        Break,
-        Build
-    }
+    
 
     public Animator animator;
 
     public Image editWallsBtnImage;
+    public Image editModeBtnImage;
 
-    public WallEditMode wallEditMode;
+    public RoomEditor.WallEditMode wallEditMode;
 
-    public Color colorEditWallsBreak = Color.red;
-    public Color colorEditWallsBuild = Color.green;
+    public Color colorNeutral = new Color(1f / 236f, 1 / 236, 1f / 236f);
+    public Color colorNegative = Color.red;
+    public Color colorPositive = Color.green;
 
 
     public Stack<string> strings = new Stack<string>();
@@ -53,26 +50,34 @@ public class ToolsMenu : MonoBehaviour
     {
         switch(wallEditMode)
         {
-            case WallEditMode.None:
+            case RoomEditor.WallEditMode.None:
                 {
-                    wallEditMode = WallEditMode.Build;
-                    editWallsBtnImage.color = colorEditWallsBuild;
+                    wallEditMode = RoomEditor.WallEditMode.Build;
+                    editWallsBtnImage.color = colorNeutral;
                 }
                 break;
-            case WallEditMode.Build:
+            case RoomEditor.WallEditMode.Build:
                 {
-                    wallEditMode = WallEditMode.Break;
-                    editWallsBtnImage.color = colorEditWallsBreak;
+                    wallEditMode = RoomEditor.WallEditMode.Break;
+                    editWallsBtnImage.color = colorNegative;
                 }
                 break;
-            case WallEditMode.Break:
+            case RoomEditor.WallEditMode.Break:
                 {
-                    wallEditMode = WallEditMode.Build;
-                    editWallsBtnImage.color = colorEditWallsBuild;
+                    wallEditMode = RoomEditor.WallEditMode.None;
+                    editWallsBtnImage.color = colorPositive;
                 }
                 break;
         }
+
+        RoomEditor.WallMode = wallEditMode;
     }
+
+    public void SwitchEditModeToggle()
+    {
+        RoomEditor.EditMode ^= true;
+        editModeBtnImage.color = (RoomEditor.EditMode) ? colorPositive : Color.gray;
+    } 
 
     
 }
