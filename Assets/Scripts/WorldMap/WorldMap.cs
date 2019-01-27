@@ -69,7 +69,10 @@ public class WorldChunk
         foreach(var obj in instantiatedObjects)
         {
             Object.Destroy(obj.Value);
+            WorldMap.GlobalInstantiatedObjects.Remove(obj.Key);
         }
+
+        instantiatedObjects.Clear();
 
         Update(layer, worldChunkModel);
 
