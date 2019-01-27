@@ -77,6 +77,16 @@ public class NetworkClient : MonoBehaviour
         public int blockType;
     }
 
+    private class SetFurnitureRequestData : Request
+    {
+        public string username;
+        public string authToken;
+        public int positionX;
+        public int positionZ;
+        public int furnitureType;
+        public int rotation;
+    }
+
     private class ResponseData
     {
         public string status;
@@ -342,6 +352,23 @@ public class NetworkClient : MonoBehaviour
                 positionX = posX,
                 positionZ = posZ,
                 blockType = blockType
+            }
+        );
+    }
+
+    public void SetFurniture(int posX, int posZ, int furnitureType, int rotation)
+    {
+        UnityWebRequest setBlockRequest = SendRequest
+        (
+            new SetFurnitureRequestData
+            {
+                action = "setFurniture",
+                username = username,
+                authToken = authToken,
+                positionX = posX,
+                positionZ = posZ,
+                furnitureType = furnitureType,
+                rotation = rotation
             }
         );
     }
