@@ -212,6 +212,7 @@ GameObject:
   - component: {fileID: 4811363561965167376}
   - component: {fileID: 2756073720503441413}
   - component: {fileID: 4811363561965167382}
+  - component: {fileID: 2341727318481847721}
   m_Layer: 0
   m_Name: EntityPlayer
   m_TagString: Untagged
@@ -246,7 +247,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4c0b511d3be591f4088cafbd217bce4b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controllable: 0
   maxMoveSpeed: 6
   characterVisual: {fileID: 4811363561781928056}
   characterController: {fileID: 4811363561965167382}
@@ -271,6 +271,18 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0.5, z: 0}
+--- !u!114 &2341727318481847721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4811363561965167381}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33fb0aca73371734c85bdd74ab4e5c9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &5203100409196134553
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -281,34 +293,6 @@ PrefabInstance:
     - target: {fileID: 100020, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
       propertyPath: m_Name
       value: human
-      objectReference: {fileID: 0}
-    - target: {fileID: 100004, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100006, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100008, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100010, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100012, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100014, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 100018, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400020, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
       propertyPath: m_LocalPosition.x
@@ -358,6 +342,34 @@ PrefabInstance:
       propertyPath: m_Controller
       value: 
       objectReference: {fileID: 9100000, guid: 4615b82b3027064468310599834da138, type: 2}
+    - target: {fileID: 100004, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100006, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100008, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100010, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100012, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100014, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100018, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 100030, guid: 1f7c832937e35004cb0f0703d86613ed, type: 3}
       propertyPath: m_IsActive
       value: 0

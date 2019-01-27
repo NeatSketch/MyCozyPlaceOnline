@@ -15,7 +15,9 @@ public class EntityPlayer : Entity
             prefab = Resources.Load<GameObject>("Prefabs/EntityPlayer");
         }
 
-        return prefab.GetComponent<EntityPlayer>();
+        GameObject go = Instantiate(prefab);
+            
+        return go.GetComponent<EntityPlayer>();
     }
 
     public override GameObject CreateIt(int layer, EntityModel entityModel)
