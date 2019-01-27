@@ -5,12 +5,12 @@ using UnityEngine;
 
 public enum CharacterSlotName
 {
-    Head,
-    Necklace,
-    Ass,
-    Eyes,
-    OnHead,
-    Mouth
+    Head = 0,
+    Necklace = 1,
+    Ass = 2,
+    Eyes = 3,
+    OnHead = 4,
+    Mouth = 5
 }
 
 [System.Serializable]
@@ -222,6 +222,33 @@ public class Character : MonoBehaviour
         {
             DressAccessoryItem(item);
         }
+    }
+
+    public void SetDressItemsByNames(string[] names)
+    {
+        List<AccessoryItem> items = new List<AccessoryItem>();
+
+        for (int i = 0; i < names.Length; i++)
+        {
+            AccessoryItem item = AccessoryItems.Find(x => x.name == names[i]);
+
+            items.Add(item);
+        }
+
+        SetDressItems(items);
+    }
+
+    public string[] GetDressItems()
+    {
+        List<string> names = new List<string>();
+
+        for (int i = 0; i < (int)CharacterSlotName.Mouth; i++)
+        {
+            var item = dressedItems.Find(x => x.slotName == (CharacterSlotName)i);
+            names.Add(item?.name);
+        }
+
+        return names.ToArray();
     }
 
     public bool IsItemDressed(AccessoryItem item)
